@@ -1,0 +1,8 @@
+[
+  { "date": "2014-09-20", "teams": [ "Ithaca Community Quidditch Team", "SUNY Geneseo" ], "scores": [ 30, 110 ], "catches": [ 0 ] },
+  { "date": "2014-09-20", "teams": [ "University of Rochester Thestrals", "RIT Dark Marks" ], "scores": [ 0, 90 ], "catches": [ 0 ] },
+  { "date": "2014-09-20", "teams": [ "SUNY Geneseo", "RIT Dark Marks" ], "scores": [ 50, 90 ], "catches": [ 1 ] },
+  { "date": "2014-09-20", "teams": [ "RIT Dark Marks", "Ithaca Community Quidditch Team" ], "scores": [ 180, 10 ], "catches": [ 1 ] },
+  { "date": "2014-09-20", "teams": [ "Ithaca Community Quidditch Team", "University of Rochester Thestrals" ], "scores": [ 0, 100 ], "catches": [ 1 ] },
+  { "date": "2014-09-20", "teams": [ "SUNY Geneseo", "University of Rochester Thestrals" ], "scores": [ 60, 70 ], "catches": [ 0 ] }
+]

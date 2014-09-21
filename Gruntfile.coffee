@@ -35,6 +35,13 @@ module.exports = (grunt) ->
         src: [ '**/*.haml' ]
         dest: 'public'
         ext: '.html'
+    copy:
+      json:
+        expand: true
+        cwd: 'assets/json/'
+        src: [ '**/*.json' ]
+        dest: 'public/'
+        filter: 'isFile'
     ngAnnotate:
       options:
         singleQuotes: true
@@ -63,6 +70,9 @@ module.exports = (grunt) ->
       haml:
         files: 'assets/html/**/*.haml'
         tasks: 'haml:assets'
+      json:
+        files: 'assets/json/**/*.json'
+        tasks: 'copy:json'
     clean:
       assets: [ "public/*", "!public/bower_components" ]
     'http-server':
@@ -80,6 +90,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-notify'
   grunt.loadNpmTasks 'grunt-contrib-clean'
+  grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-http-server'
 
   grunt.registerTask 'default', [
@@ -92,6 +103,7 @@ module.exports = (grunt) ->
     'coffee:assets'
     'sass:assets'
     'haml:assets'
+    'copy:json'
   ]
 
   grunt.registerTask 'dist', [
