@@ -87,6 +87,9 @@ module.exports = (grunt) ->
         root: "public/"
         port: 8080
         runInBackground: true
+      dist:
+        root: "public/"
+        port: 8080
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-sass'
@@ -120,4 +123,5 @@ module.exports = (grunt) ->
     'sass:assets'
     'cssmin:dist'
     'haml:dist'
+    'copy:json'
   ]
