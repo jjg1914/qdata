@@ -1,0 +1,19 @@
+{
+  "name": "angular-seed",
+  "description": "Starting point for a AngularJS project",
+  "repository": "https://github.com/jjg1914/angular-seed.git",
+  "version": "0.0.0",
+  "dependencies": {
+    "grunt": "~0.4",
+    "grunt-contrib-coffee": "~0.10",
+    "grunt-contrib-sass": "~0.7",
+    "grunt-haml": "~0.9",
+    "grunt-ng-annotate": "~0.3",
+    "grunt-contrib-uglify": "~0.5",
+    "grunt-contrib-cssmin": "~0.10",
+    "grunt-contrib-watch": "~0.6",
+    "grunt-notify": "~0.3",
+    "grunt-contrib-clean": "~0.5",
+    "grunt-http-server": "~1.0"
+  }
+}

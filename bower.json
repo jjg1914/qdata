@@ -1,0 +1,6 @@
+{
+  "name": "crafty-seed",
+  "dependencies": {
+    "angular": "~1.2"
+  }
+}
