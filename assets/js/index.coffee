@@ -7,13 +7,13 @@ qdata.factory "teams", ($q,$http) ->
   $http.get('teams.json').then (data) ->
     result = []
     for team, i in data.data
-      team.id = i
       team.wins = 0
       team.loses = 0
       team.catches = 0
       team.games = 0
       team.pointsFor = 0
       team.pointsAgainst = 0
+      team.pointDiff = 0
       _nameIndex[team.name] = i
       result.push team
     _data.resolve result
@@ -41,7 +41,7 @@ qdata.factory "games", ($q,$http) ->
 qdata.factory "statsEngine", ($q,games,teams) ->
   run: ->
     games.all().then (data) ->
-      defers = for game in data
+      $q.all( for game in data
         $q.all([teams.findByName(game.teams[0]),
                 teams.findByName(game.teams[1])]).then ((game_data,teams_data) ->
           tmpScores = game_data.scores.slice 0
@@ -61,7 +61,10 @@ qdata.factory "statsEngine", ($q,games,teams) ->
             teams_data[0].loses += 1
             teams_data[1].wins += 1
         ).bind(this,game)
-      $q.all defers
+      ).then ->
+        teams.all().then (teams_data) ->
+          for team in teams_data
+            team.pointDiff = team.pointsFor - team.pointsAgainst
 
 qdata.filter "formatRegion", ->
   (value) ->
@@ -84,9 +87,11 @@ qdata.filter "formatRegion", ->
 
 qdata.controller "ApplicationController", ($scope,$filter,ngTableParams,teams,statsEngine) ->
   statsEngine.run().then ->
+    console.log "reload"
     $scope.tableParams.reload()
 
   $scope.minimumGames = 1
+  $scope.region = "all"
 
   $scope.tableParams = new ngTableParams { page: 1, count: 1024 },
     total: 1
@@ -96,7 +101,8 @@ qdata.controller "ApplicationController", ($scope,$filter,ngTableParams,teams,st
         params.total(data.length)
 
         data = $filter("filter") data, (value) ->
-          value.games >= $scope.minimumGames
+          value.games >= $scope.minimumGames &&
+          ( $scope.region == "all" || value.region == $scope.region )
 
         data = if params.sorting()
           $filter("orderBy")(data, params.orderBy())
@@ -106,4 +112,7 @@ qdata.controller "ApplicationController", ($scope,$filter,ngTableParams,teams,st
         $defer.resolve(data)
 
   $scope.$watch "minimumGames", ->
+    $scope.tableParams.reload()
+
+  $scope.$watch "region", ->
     $scope.tableParams.reload()

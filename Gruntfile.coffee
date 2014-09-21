@@ -10,7 +10,11 @@ module.exports = (grunt) ->
     sass:
       assets:
         options:
+          bundleExec: true
           compass: true
+          loadPath: [
+            "public/bower_components/bootstrap-sass-official/assets/stylesheets/"
+          ]
         expand: true
         cwd: 'assets/css'
         src: [ '**/*.sass' ]

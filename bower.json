@@ -2,6 +2,7 @@
   "name": "qdata",
   "dependencies": {
     "angular": "~1.2",
-    "ng-table": "~0.3"
+    "ng-table": "~0.3",
+    "bootstrap-sass-official": "~3.2"
   }
 }
