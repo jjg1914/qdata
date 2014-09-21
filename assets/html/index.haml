@@ -7,26 +7,22 @@
       %link(href="index.min.css" rel="stylesheet" type="text/css" media="all")
       %script(src="index.min.js" type="text/javascript")
     - else
+      %link(href="bower_components/ng-table/ng-table.css" rel="stylesheet" type="text/css" media="all")
       %link(href="index.css" rel="stylesheet" type="text/css" media="all")
       %script(src="bower_components/angular/angular.js" type="text/javascript")
+      %script(src="bower_components/ng-table/ng-table.js" type="text/javascript")
       %script(src="index.js" type="text/javascript")
   %body(ng-app="qdata" ng-controller="ApplicationController")
-    %table
-      %thead
-        %tr
-          %th Name
-          %th Region
-          %th G
-          %th W
-          %th L
-          %th PF
-          %th PA
+    %form
+      %label Minimum Games
+      %input(type="number" min="0" step="1" ng-model="minimumGames")
+    %table(ng-table="tableParams")
       %tbody
-        %tr(ng-repeat="team in teams" ng-if="team.games > 0")
-          %td {{ team.name }}
-          %td {{ team.region | formatRegion }}
-          %td {{ team.games }}
-          %td {{ team.wins }}
-          %td {{ team.loses }}
-          %td {{ team.pointsFor }}
-          %td {{ team.pointsAgainst }}
+        %tr(ng-repeat="team in $data")
+          %td(data-title="'Name'" data-sortable="'name'") {{ team.name }}
+          %td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
+          %td(data-title="'G'" data-sortable="'games'") {{ team.games }}
+          %td(data-title="'W'" data-sortable="'wins'") {{ team.wins }}
+          %td(data-title="'L'" data-sortable="'loses'") {{ team.loses }}
+          %td(data-title="'PF'" data-sortable="'pointsFor'") {{ team.pointsFor }}
+          %td(data-title="'PA'" data-sortable="'pointsAgainst'") {{ team.pointsAgainst }}

@@ -52,14 +52,17 @@ module.exports = (grunt) ->
       dist:
         files:
           'public/index.min.js': [
-            'public/bower_components/jquery/dist/jquery.js'
-            'public/bower_components/crafty/dist/crafty.js'
+            'public/bower_components/angular/angular.js'
+            'public/bower_components/ng-table/ng-table.js'
             'public/index.annotate.js'
           ]
     cssmin:
       dist:
         files:
-          'public/index.min.css': [ 'public/index.css' ]
+          'public/index.min.css': [
+            'public/bower_components/ng-table/ng-table.css'
+            'public/index.css'
+          ]
     watch:
       coffee:
         files: 'assets/js/**/*.coffee'

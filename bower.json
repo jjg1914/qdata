@@ -1,6 +1,7 @@
 {
-  "name": "crafty-seed",
+  "name": "qdata",
   "dependencies": {
-    "angular": "~1.2"
+    "angular": "~1.2",
+    "ng-table": "~0.3"
   }
 }

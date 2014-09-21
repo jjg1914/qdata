@@ -1,4 +1,4 @@
-qdata = angular.module "qdata", []
+qdata = angular.module "qdata", [ "ngTable" ]
 
 qdata.factory "teams", ($q,$http) ->
   _data = $q.defer()
@@ -41,10 +41,9 @@ qdata.factory "games", ($q,$http) ->
 qdata.factory "statsEngine", ($q,games,teams) ->
   run: ->
     games.all().then (data) ->
-      for game in data
+      defers = for game in data
         $q.all([teams.findByName(game.teams[0]),
                 teams.findByName(game.teams[1])]).then ((game_data,teams_data) ->
-          console.log teams_data
           tmpScores = game_data.scores.slice 0
 
           team.games += 1 for team in teams_data
@@ -62,6 +61,7 @@ qdata.factory "statsEngine", ($q,games,teams) ->
             teams_data[0].loses += 1
             teams_data[1].wins += 1
         ).bind(this,game)
+      $q.all defers
 
 qdata.filter "formatRegion", ->
   (value) ->
@@ -81,7 +81,29 @@ qdata.filter "formatRegion", ->
       when "ma"
         "Mid-Atlantic"
 
-qdata.controller "ApplicationController", ($scope,teams,statsEngine) ->
-  statsEngine.run()
-  teams.all().then (data) ->
-    $scope.teams = data
+
+qdata.controller "ApplicationController", ($scope,$filter,ngTableParams,teams,statsEngine) ->
+  statsEngine.run().then ->
+    $scope.tableParams.reload()
+
+  $scope.minimumGames = 1
+
+  $scope.tableParams = new ngTableParams { page: 1, count: 1024 },
+    total: 1
+    counts: [],
+    getData: ($defer,params) ->
+      teams.all().then (data) ->
+        params.total(data.length)
+
+        data = $filter("filter") data, (value) ->
+          value.games >= $scope.minimumGames
+
+        data = if params.sorting()
+          $filter("orderBy")(data, params.orderBy())
+        else
+          data
+
+        $defer.resolve(data)
+
+  $scope.$watch "minimumGames", ->
+    $scope.tableParams.reload()
