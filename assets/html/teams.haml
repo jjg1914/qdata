@@ -1,0 +1,37 @@
+.panel.panel-default
+  .panel-heading
+    %h3.panel-title Filters
+  .panel-body
+    %form.form-inline(role="form")
+      .form-group
+        %label(for="minimumGames") Minimum Games
+        %br
+        %input.form-control(type="number" name="minimumGames"
+                            min="0" step="1" ng-model="minimumGames")
+      .form-group
+        %label(for="region") Region
+        %br
+        %select.form-control(name="region" ng-model="region")
+          %option(value="all") All
+          %option(value="ma") {{ "ma" | formatRegion }}
+          %option(value="mw") {{ "mw" | formatRegion }}
+          %option(value="ne") {{ "ne" | formatRegion }}
+          %option(value="nw") {{ "nw" | formatRegion }}
+          %option(value="s") {{ "s" | formatRegion }}
+          %option(value="sw") {{ "sw" | formatRegion }}
+          %option(value="w") {{ "w" | formatRegion }}
+%table.table(ng-table="tableParams")
+  %tbody
+    %tr(ng-repeat="team in $data")
+      %td(data-title="'Name'" data-sortable="'name'") {{ team.name }}
+      %td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
+      %td(data-title="'G'" data-sortable="'games'") {{ team.games }}
+      %td(data-title="'W'" data-sortable="'wins'") {{ team.wins }}
+      %td(data-title="'L'" data-sortable="'loses'") {{ team.loses }}
+      %td(data-title="'S'" data-sortable="'catches'") {{ team.catches }}
+      %td(data-title="'PF'" data-sortable="'pointsFor'") {{ team.pointsFor }}
+      %td(data-title="'PA'" data-sortable="'pointsAgainst'") {{ team.pointsAgainst }}
+      %td(data-title="'PD'" data-sortable="'pointDiff'")
+        %span(ng-class="{'text-success': team.pointDiff > 0,
+                         'text-danger': team.pointDiff < 0 }")
+          {{ team.pointDiff }}

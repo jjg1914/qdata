@@ -1,0 +1,10 @@
+%ul.list-group
+  %li.list-group-item(ng-repeat="game in games | orderBy:'date':true")
+    .row
+      .col-xs-3 {{ game.date | formatDate }}
+      .col-xs-1 {{ game | formatScore: 0 }}
+      .col-xs-8 {{ game.teams[0] }}
+    .row
+      .col-xs-3
+      .col-xs-1 {{ game | formatScore: 1 }}
+      .col-xs-8 {{ game.teams[1] }}

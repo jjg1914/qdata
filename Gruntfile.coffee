@@ -56,8 +56,12 @@ module.exports = (grunt) ->
       dist:
         files:
           'public/index.min.js': [
+            'public/bower_components/jquery/dist/jquery.js'
+            'public/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js'
             'public/bower_components/angular/angular.js'
+            'public/bower_components/angular-route/angular-route.js'
             'public/bower_components/ng-table/ng-table.js'
+            'public/bower_components/moment/moment.js'
             'public/index.annotate.js'
           ]
     cssmin:
@@ -105,7 +109,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'default', [
     'build'
-    'http-server'
+    'http-server:assets'
     'watch'
   ]
 

@@ -4,5 +4,9 @@
   { "date": "2014-09-20", "teams": [ "SUNY Geneseo", "RIT Dark Marks" ], "scores": [ 50, 90 ], "catches": [ 1 ] },
   { "date": "2014-09-20", "teams": [ "RIT Dark Marks", "Ithaca Community Quidditch Team" ], "scores": [ 180, 10 ], "catches": [ 1 ] },
   { "date": "2014-09-20", "teams": [ "Ithaca Community Quidditch Team", "University of Rochester Thestrals" ], "scores": [ 0, 100 ], "catches": [ 1 ] },
-  { "date": "2014-09-20", "teams": [ "SUNY Geneseo", "University of Rochester Thestrals" ], "scores": [ 60, 70 ], "catches": [ 0 ] }
+  { "date": "2014-09-20", "teams": [ "SUNY Geneseo", "University of Rochester Thestrals" ], "scores": [ 60, 70 ], "catches": [ 0 ] },
+  { "date": "2014-09-21", "teams": [ "Q.C. Boston: The Massacre", "Brandeis Quidditch" ], "scores": [ 160, 0 ], "catches": [ 0 ] },
+  { "date": "2014-09-21", "teams": [ "Q.C. Boston: The Massacre", "Clark University Quidditch" ], "scores": [ 260, 0 ], "catches": [ 0 ] },
+  { "date": "2014-09-21", "teams": [ "Q.C. Boston: The Massacre", "Brandeis Quidditch" ], "scores": [ 130, 10 ], "catches": [ 0 ] },
+  { "date": "2014-09-21", "teams": [ "Clark University Quidditch", "Brandeis Quidditch" ], "scores": [ 10, 200 ], "catches": [ 1 ] }
 ]
