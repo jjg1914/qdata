@@ -56,7 +56,10 @@ qdata.factory "statsEngine", ($q,games,teams) ->
         $q.all( for game in data
           $q.all([teams.findByName(game.teams[0]),
                   teams.findByName(game.teams[1])]).then ((game_data,teams_data) ->
-            tmpScores = game_data.scores.slice 0
+            tmpScores = [ 0, 0 ]
+            for row,i in game_data.scores
+              for s in row
+                tmpScores[i] += s
 
             team.games += 1 for team in teams_data
 
@@ -82,21 +85,22 @@ qdata.filter "formatDate", ->
   (value) ->
     moment(value, "YYYY-MM-DD").format("MMM Do 'YY")
 
-qdata.filter "formatScore", ->
+qdata.filter "formatFinalScore", ->
   (value,index) ->
-    sufix = ""
-    score = value.scores[index]
-    for c, i in value.catches
-      if c == index
-        score += 30
-        switch i
-          when 0
-            sufix += "*"
-          when 1
-            sufix += "^"
-          when 3
-            sufix += "!"
-    score + sufix
+    score = 0
+    for s in value.scores[index]
+      score += s
+    score += 30 for c in value.catches when c == index
+    return score
+
+qdata.filter "formatScore", ->
+  (value,index,period) ->
+    if period < value.scores[index].length
+      result = value.scores[index][period]
+      result += "(+30)" if value.catches[period] == index
+      result
+    else
+      ""
 
 qdata.filter "formatRegion", ->
   (value) ->
@@ -115,6 +119,23 @@ qdata.filter "formatRegion", ->
         "Midwest"
       when "ma"
         "Mid-Atlantic"
+
+qdata.directive "qGameFinalScore", ->
+  replace: true
+  restrict: "E"
+  scope:
+    qGame: "="
+    qTeamIndex: "="
+  template: """
+    <span ng-class="{'text-success': isWinner, 'text-danger': isLoser}">
+      {{ score }}
+    </span>
+    """
+  link: ($scope) ->
+    $scope.score = 0
+    for score in $scope.qGame.scores[$scope.qTeamIndex]
+      $scope.score += score
+    $scope.score += 30 for c in $scope.qGame.catches when c == $scope.qTeamIndex
 
 qdata.controller "TeamsController", ($scope,$filter,ngTableParams,teams,statsEngine) ->
   statsEngine.run().then ->
@@ -150,6 +171,15 @@ qdata.controller "TeamsController", ($scope,$filter,ngTableParams,teams,statsEng
 qdata.controller "GamesController", ($scope,games) ->
   games.all().then (data) ->
     $scope.games = data
+
+    tmp = {}
+    for game in data
+      tmp[game.event] = true
+    $scope.events = ( k for k,v of tmp )
+    $scope.event = "all"
+
+    $scope.gameFilter = (game) ->
+      $scope.event == "all" or game.event == $scope.event
 
 qdata.controller "ApplicationController", ($scope,$location) ->
   $scope.navPath = ->
