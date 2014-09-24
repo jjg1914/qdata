@@ -63,6 +63,7 @@ module.exports = (grunt) ->
             'public/bower_components/ng-table/ng-table.js'
             'public/bower_components/moment/moment.js'
             'public/bower_components/async/lib/async.js'
+            'public/bower_components/sprintf/lib/sprintf.js'
             'public/index.annotate.js'
           ]
     cssmin:

@@ -35,3 +35,7 @@
         %span(ng-class="{'text-success': team.pointDiff > 0,
                          'text-danger': team.pointDiff < 0 }")
           {{ team.pointDiff }}
+      %td(data-title="'W%'" data-sortable="'winPercent'")
+        {{ "%.3f" | sprintf: team.winPercent }}
+      %td(data-title="'SoS'" data-sortable="'sos'")
+        {{ "%.3f" | sprintf: team.sos }}

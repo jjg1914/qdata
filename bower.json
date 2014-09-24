@@ -6,6 +6,7 @@
     "ng-table": "~0.3",
     "moment": "~2.8",
     "bootstrap-sass-official": "~3.2",
-    "async": "https://github.com/caolan/async.git#v0.2.5"
+    "async": "https://github.com/caolan/async.git#v0.2.5",
+    "sprintf": "~1.0"
   }
 }

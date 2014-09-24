@@ -108,86 +108,178 @@ qdata.factory "statsEngine", ($q,games,teams) ->
       return q.promise
 
   _runLoses = ->
-    teams.all().then (teams) ->
-      q = $q.defer()
-      async.each teams, (team,cb) ->
-        async.reduce team._statsGames, 0, (m,gamei,cb) ->
-          game = _games[gamei]
-          i = game.teams.indexOf team.name
-          _score0 = game._statsFinalScores[i]
-          _score1 = game._statsFinalScores[1 - i]
-          cb null, if _score0 < _score1 then m + 1 else m
-        , (err,result) ->
-          team.loses = result
-          cb()
-      , -> q.resolve()
-      return q.promise
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      async.reduce team._statsGames, 0, (m,gamei,cb) ->
+        game = _games[gamei]
+        i = game.teams.indexOf team.name
+        _score0 = game._statsFinalScores[i]
+        _score1 = game._statsFinalScores[1 - i]
+        cb null, if _score0 < _score1 then m + 1 else m
+      , (err,result) ->
+        team.loses = result
+        cb()
+    , -> q.resolve()
+    return q.promise
 
   _runCatches = ->
-    teams.all().then (teams) ->
-      q = $q.defer()
-      async.each teams, (team,cb) ->
-        async.reduce team._statsGames, 0, (m,gamei,cb) ->
-          game = _games[gamei]
-          i = game.teams.indexOf team.name
-          count = 0
-          count += 1 for c in game.catches when c == i
-          cb null, m + count
-        , (err,result) ->
-          team.catches = result
-          cb()
-      , -> q.resolve()
-      return q.promise
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      async.reduce team._statsGames, 0, (m,gamei,cb) ->
+        game = _games[gamei]
+        i = game.teams.indexOf team.name
+        count = 0
+        count += 1 for c in game.catches when c == i
+        cb null, m + count
+      , (err,result) ->
+        team.catches = result
+        cb()
+    , -> q.resolve()
+    return q.promise
 
   _runPointsFor = ->
-    teams.all().then (teams) ->
-      q = $q.defer()
-      async.each teams, (team,cb) ->
-        async.reduce team._statsGames, 0, (m,gamei,cb) ->
-          game = _games[gamei]
-          i = game.teams.indexOf team.name
-          cb null, m + game._statsScores[i]
-        , (err,result) ->
-          team.pointsFor = result
-          cb()
-      , -> q.resolve()
-      return q.promise
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      async.reduce team._statsGames, 0, (m,gamei,cb) ->
+        game = _games[gamei]
+        i = game.teams.indexOf team.name
+        cb null, m + game._statsScores[i]
+      , (err,result) ->
+        team.pointsFor = result
+        cb()
+    , -> q.resolve()
+    return q.promise
 
   _runPointsAgainst = ->
-    teams.all().then (teams) ->
-      q = $q.defer()
-      async.each teams, (team,cb) ->
-        async.reduce team._statsGames, 0, (m,gamei,cb) ->
-          game = _games[gamei]
-          i = game.teams.indexOf team.name
-          cb null, m + game._statsScores[1 - i]
-        , (err,result) ->
-          team.pointsAgainst = result
-          cb()
-      , -> q.resolve()
-      return q.promise
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      async.reduce team._statsGames, 0, (m,gamei,cb) ->
+        game = _games[gamei]
+        i = game.teams.indexOf team.name
+        cb null, m + game._statsScores[1 - i]
+      , (err,result) ->
+        team.pointsAgainst = result
+        cb()
+    , -> q.resolve()
+    return q.promise
 
   _runPointDiff = ->
-    teams.all().then (teams) ->
-      q = $q.defer()
-      async.each teams, (team,cb) ->
-        team.pointDiff = team.pointsFor - team.pointsAgainst
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      team.pointDiff = team.pointsFor - team.pointsAgainst
+      cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runWinPercent = ->
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      team.winPercent = team.wins / team.games
+      cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runStatOR = ->
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      async.waterfall [
+        (cb) ->
+          async.map team._statsGames, (gamei,cb) ->
+            game = _games[gamei]
+            i = game.teams.indexOf team.name
+            cb null, game.teams[1 - i]
+          , cb
+        (opponents,cb) ->
+          async.map opponents, (opponent,cb) ->
+            oppTeam = _teams[_teamCache[opponent]]
+            async.waterfall [
+              (cb) ->
+                async.map oppTeam._statsGames, (gamei,cb) ->
+                  cb null, _games[gamei]
+                , cb
+              (oppGames,cb) ->
+                async.filter oppGames, (game,cb) ->
+                  cb game.teams.indexOf(team.name) == -1
+                , (result) -> cb null, result
+              (oppGames,cb) ->
+                async.filter oppGames, (game,cb) ->
+                  i = game.teams.indexOf oppTeam.name
+                  score0 = game._statsFinalScores[i]
+                  score1 = game._statsFinalScores[1 - i]
+                  cb score0 > score1
+                , (result) -> cb null, result.length, oppGames.length
+            ], (err,oppWins,oppGames) -> cb null, [ oppWins, oppGames ]
+          , cb
+        (opponentWins,cb) ->
+          async.reduce opponentWins, [ 0, 0 ], (m,opponentWin,cb) ->
+            cb null, [ m[0] + opponentWin[0], m[1] + opponentWin[1] ]
+          , cb
+      ], (err,result) ->
+        team._statOR = result
         cb()
-      , -> q.resolve()
-      return q.promise
+    , -> q.resolve()
+    return q.promise
+
+  _runStatORR = ->
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      async.waterfall [
+        (cb) ->
+          async.map team._statsGames, (gamei,cb) ->
+            game = _games[gamei]
+            i = game.teams.indexOf team.name
+            cb null, game.teams[1 - i]
+          , cb
+        (opponents,cb) ->
+          async.map opponents, (opponent,cb) ->
+            oppTeam = _teams[_teamCache[opponent]]
+            cb null, oppTeam._statOR
+          , cb
+        (opponentORs,cb) ->
+          async.reduce opponentORs, [ 0, 0 ], (m,opponentOR,cb) ->
+            cb null, [ m[0] + opponentOR[0], m[1] + opponentOR[1] ]
+          , cb
+      ], (err,result) ->
+        team._statORR = result
+        cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runSoS = ->
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      _oppW = if team._statOR[1] != 0
+        team._statOR[0] / team._statOR[1]
+      else
+        0
+      _oppOppW = if team._statORR[1] != 0
+        team._statORR[0] / team._statORR[1]
+      else
+        0
+      team.sos = ( ( 2 * _oppW ) + _oppOppW ) / 3
+      cb()
+    , -> q.resolve()
+    return q.promise
 
   run: ->
     _preRun().then ->
       $q.all([
-        _runGames()
-        _runWins()
+        $q.all([
+          _runGames()
+          _runWins()
+        ]).then -> _runWinPercent()
         _runLoses()
         _runCatches()
+        _runStatOR().then -> _runStatORR().then -> _runSoS()
         $q.all([
           _runPointsFor()
           _runPointsAgainst()
         ]).then -> _runPointDiff()
       ])
+
+qdata.filter "sprintf", ->
+  (value,args...) ->
+    sprintf value, args...
 
 qdata.filter "formatDate", ->
   (value) ->
