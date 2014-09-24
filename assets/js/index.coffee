@@ -42,44 +42,152 @@ qdata.factory "games", ($q,$http) ->
   all: -> _data.promise
 
 qdata.factory "statsEngine", ($q,games,teams) ->
+  _teams = []
+  _games = []
+  _teamCache = {}
+
+  _preRun = ->
+    _teams.length = 0
+    _games.length = 0
+    $q.all([teams.all(), games.all()]).then (data) ->
+      q = $q.defer()
+      async.series [
+        (cb) -> async.each data[0], (team,cb) ->
+          _teamCache[team.name] = _teams.length
+          team._statsGames = []
+          _teams.push team
+
+          cb()
+        , cb
+        (cb) -> async.each data[1], (game,cb) ->
+          _team0i = _teamCache[game.teams[0]]
+          _team1i = _teamCache[game.teams[1]]
+          game._statsTeams = [ _team0i, _team1i ]
+
+          _teams[_team0i]._statsGames.push _games.length
+          _teams[_team1i]._statsGames.push _games.length
+          _games.push game
+
+          game._statsScores = [ 0, 0 ]
+          for row, i in game.scores
+            for score in row
+              game._statsScores[i] += score
+
+          game._statsFinalScores = game._statsScores.slice 0
+          for c in game.catches
+            game._statsFinalScores[c] += 30 if c >= 0
+
+          cb()
+        , cb
+      ], -> q.resolve()
+      return q.promise
+
+  _runGames = ->
+    teams.all().then (teams) ->
+      q = $q.defer()
+      async.each teams, (team,cb) ->
+        team.games = team._statsGames.length
+        cb()
+      , q.resolve()
+      return q.promise
+  
+  _runWins = ->
+    teams.all().then (teams) ->
+      q = $q.defer()
+      async.each teams, (team,cb) ->
+        async.reduce team._statsGames, 0, (m,gamei,cb) ->
+          game = _games[gamei]
+          i = game.teams.indexOf team.name
+          _score0 = game._statsFinalScores[i]
+          _score1 = game._statsFinalScores[1 - i]
+          cb null, if _score0 > _score1 then m + 1 else m
+        , (err,result) ->
+          team.wins = result
+          cb()
+      , -> q.resolve()
+      return q.promise
+
+  _runLoses = ->
+    teams.all().then (teams) ->
+      q = $q.defer()
+      async.each teams, (team,cb) ->
+        async.reduce team._statsGames, 0, (m,gamei,cb) ->
+          game = _games[gamei]
+          i = game.teams.indexOf team.name
+          _score0 = game._statsFinalScores[i]
+          _score1 = game._statsFinalScores[1 - i]
+          cb null, if _score0 < _score1 then m + 1 else m
+        , (err,result) ->
+          team.loses = result
+          cb()
+      , -> q.resolve()
+      return q.promise
+
+  _runCatches = ->
+    teams.all().then (teams) ->
+      q = $q.defer()
+      async.each teams, (team,cb) ->
+        async.reduce team._statsGames, 0, (m,gamei,cb) ->
+          game = _games[gamei]
+          i = game.teams.indexOf team.name
+          count = 0
+          count += 1 for c in game.catches when c == i
+          cb null, m + count
+        , (err,result) ->
+          team.catches = result
+          cb()
+      , -> q.resolve()
+      return q.promise
+
+  _runPointsFor = ->
+    teams.all().then (teams) ->
+      q = $q.defer()
+      async.each teams, (team,cb) ->
+        async.reduce team._statsGames, 0, (m,gamei,cb) ->
+          game = _games[gamei]
+          i = game.teams.indexOf team.name
+          cb null, m + game._statsScores[i]
+        , (err,result) ->
+          team.pointsFor = result
+          cb()
+      , -> q.resolve()
+      return q.promise
+
+  _runPointsAgainst = ->
+    teams.all().then (teams) ->
+      q = $q.defer()
+      async.each teams, (team,cb) ->
+        async.reduce team._statsGames, 0, (m,gamei,cb) ->
+          game = _games[gamei]
+          i = game.teams.indexOf team.name
+          cb null, m + game._statsScores[1 - i]
+        , (err,result) ->
+          team.pointsAgainst = result
+          cb()
+      , -> q.resolve()
+      return q.promise
+
+  _runPointDiff = ->
+    teams.all().then (teams) ->
+      q = $q.defer()
+      async.each teams, (team,cb) ->
+        team.pointDiff = team.pointsFor - team.pointsAgainst
+        cb()
+      , -> q.resolve()
+      return q.promise
+
   run: ->
-    teams.all().then (all_teams) ->
-      for team in all_teams
-        team.wins = 0
-        team.loses = 0
-        team.catches = 0
-        team.games = 0
-        team.pointsFor = 0
-        team.pointsAgainst = 0
-        team.pointDiff = 0
-      games.all().then (data) ->
-        $q.all( for game in data
-          $q.all([teams.findByName(game.teams[0]),
-                  teams.findByName(game.teams[1])]).then ((game_data,teams_data) ->
-            tmpScores = [ 0, 0 ]
-            for row,i in game_data.scores
-              for s in row
-                tmpScores[i] += s
-
-            team.games += 1 for team in teams_data
-
-            team.pointsFor += tmpScores[i] for team,i in teams_data
-            team.pointsAgainst += tmpScores[1 - i] for team,i in teams_data
-
-            for c in game_data.catches
-              tmpScores[c] += 30
-              teams_data[c].catches += 1
-            if tmpScores[0] > tmpScores[1]
-              teams_data[0].wins += 1
-              teams_data[1].loses += 1
-            else
-              teams_data[0].loses += 1
-              teams_data[1].wins += 1
-          ).bind(this,game)
-        ).then ->
-          teams.all().then (teams_data) ->
-            for team in teams_data
-              team.pointDiff = team.pointsFor - team.pointsAgainst
+    _preRun().then ->
+      $q.all([
+        _runGames()
+        _runWins()
+        _runLoses()
+        _runCatches()
+        $q.all([
+          _runPointsFor()
+          _runPointsAgainst()
+        ]).then -> _runPointDiff()
+      ])
 
 qdata.filter "formatDate", ->
   (value) ->
