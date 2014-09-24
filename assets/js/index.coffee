@@ -174,7 +174,10 @@ qdata.factory "statsEngine", ($q,games,teams) ->
   _runWinPercent = ->
     q = $q.defer()
     async.each _teams, (team,cb) ->
-      team.winPercent = team.wins / team.games
+      if team.games != 0
+        team.winPercent = team.wins / team.games
+      else
+        team.winPercent = 0
       cb()
     , -> q.resolve()
     return q.promise

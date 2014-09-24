@@ -12,7 +12,7 @@
               %option(ng-repeat="e in events" value="{{ e }}") {{ e }}
   .col-md-9
     %ul.list-group
-      %li.list-group-item(ng-repeat="game in games | filter: gameFilter | orderBy:'date':true")
+      %li.list-group-item(ng-repeat="game in games | filter: gameFilter | orderBy: ['date', 'round']:true")
         .row
           .col-md-12.box-score-col.text-muted
             {{ game.date | formatDate }}
