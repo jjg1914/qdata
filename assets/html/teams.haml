@@ -35,7 +35,11 @@
         %span(ng-class="{'text-success': team.pointDiff > 0,
                          'text-danger': team.pointDiff < 0 }")
           {{ team.pointDiff }}
+      %td(data-title="'Average QPD'" data-sortable="'averageQPD'") 
+        {{ "%.3f" | sprintf: team.averageQPD }}
       %td(data-title="'W%'" data-sortable="'winPercent'")
         {{ "%.3f" | sprintf: team.winPercent }}
+      %td(data-title="'PW'" data-sortable="'pwins'") 
+        {{ "%.3f" | sprintf: team.pwins }}
       %td(data-title="'SoS'" data-sortable="'sos'")
         {{ "%.3f" | sprintf: team.sos }}

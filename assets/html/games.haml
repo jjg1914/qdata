@@ -1,4 +1,4 @@
-.row
+.msrow
   .col-md-3
     .panel.panel-default
       .panel-heading
@@ -21,30 +21,30 @@
             .col-md-5.box-score-col
               %em.text-muted {{ game.event }}
               %br
-              - {{ game.teams[0] }}
+              {{ game.teams[0] }}
               %br
-              - {{ game.teams[1] }}
+              {{ game.teams[1] }}
             .col-md-1.box-score-col.box-score-final-col
-              .text-muted Final
+              %span.text-muted Final
               %br
-              - {{ game | formatFinalScore:0 }}
+              {{ game | formatFinalScore:0 }}
               %br
-              - {{ game | formatFinalScore:1 }}
+              {{ game | formatFinalScore:1 }}
             .col-md-2.box-score-col
-              .text-muted Regulation
+              %span.text-muted Regulation
               %br
-              - {{ game | formatScore:0:0 }}
+              {{ game | formatScore:0:0 }}
               %br
-              - {{ game | formatScore:1:0 }}
+              {{ game | formatScore:1:0 }}
             .col-md-2.box-score-col(ng-if="game.catches.length > 1")
-              .text-muted Overtime
+              %span.text-muted Overtime
               %br
-              - {{ game | formatScore:0:1 }}
+              {{ game | formatScore:0:1 }}
               %br
-              - {{ game | formatScore:1:1 }}
+              {{ game | formatScore:1:1 }}
             .col-md-2.box-score-col(ng-if="game.catches.length > 2")
-              .text-muted Sudden Death
+              %span.text-muted Sudden Death
               %br
-              - {{ game | formatScore:0:2 }}
+              {{ game | formatScore:0:2 }}
               %br
-              - {{ game | formatScore:1:2 }}
+              {{ game | formatScore:1:2 }}

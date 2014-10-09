@@ -171,6 +171,51 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
+  _runAverageQPD = ->
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      async.waterfall [
+        (cb) ->
+          async.map team._statsGames, (gamei,cb) ->
+            game = _games[gamei]
+            i = game.teams.indexOf team.name
+            pf = game._statsScores[i]
+            pa = game._statsScores[1 - i]
+            cb null, Math.min pf - pa, 120
+          , cb
+        (qpds,cb) ->
+          async.reduce qpds, 0, (m,qpd,cb) ->
+            cb null, m + qpd
+          , cb
+      ], (err,result) ->
+        if team._statsGames.length > 0
+          team.averageQPD = result / team._statsGames.length
+        else
+          team.averageQPD = 0
+        cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runPWins = ->
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      async.waterfall [
+        (cb) ->
+          async.map team._statsGames, (gamei,cb) ->
+            game = _games[gamei]
+            i = game.teams.indexOf team.name
+            cb null, [ game._statsScores[i], game._statsScores[1 - i] ]
+          , cb
+        (pds,cb) ->
+          async.reduce pds, [ 0, 0 ], (m,pd,cb) ->
+            cb null, [ m[0] + pd[0], m[1] + pd[1] ]
+          , cb
+      ], (err,result) ->
+        team.pwins = team._statsGames.length * ( 1 / ( 1 + Math.pow( result[1] / result[0], 1.83 ) ) )
+        cb()
+    , -> q.resolve()
+    return q.promise
+
   _runWinPercent = ->
     q = $q.defer()
     async.each _teams, (team,cb) ->
@@ -278,6 +323,8 @@ qdata.factory "statsEngine", ($q,games,teams) ->
           _runPointsFor()
           _runPointsAgainst()
         ]).then -> _runPointDiff()
+        _runAverageQPD()
+        _runPWins()
       ])
 
 qdata.filter "sprintf", ->
