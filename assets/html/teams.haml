@@ -52,9 +52,15 @@
         %th(q-th="'pointDiff'")
           %div(title="Point Difference")
             PD
-        %th(q-th="'averageQPD'")
+        %th(q-th="'averagePointDiff'")
           %div(title="Average Point Difference")
             %span.overline PD
+        %th(q-th="'adjustedPointDiff'")
+          %div(title="Adjusted Point Difference")
+            PD*
+        %th(q-th="'averageAdjustedPointDiff'")
+          %div(title="Average Adjusted Point Difference")
+            %span.overline PD*
         %th(q-th="'winPercent'")
           %div(title="Win Percentage")
             W%
@@ -78,10 +84,18 @@
           %span(ng-class="{'text-success': team.pointDiff > 0,
                            'text-danger': team.pointDiff < 0 }")
             {{ team.pointDiff }}
+        %td
+          %span(ng-class="{'text-success': team.averagePointDiff > 0,
+                           'text-danger': team.averagePointDiff < 0 }")
+            {{ "%.3f" | sprintf: team.averagePointDiff }}
         %td 
-          %span(ng-class="{'text-success': team.averageQPD > 0,
-                           'text-danger': team.averageQPD < 0 }")
-            {{ "%.3f" | sprintf: team.averageQPD }}
+          %span(ng-class="{'text-success': team.adjustedPointDiff > 0,
+                           'text-danger': team.adjustedPointDiff < 0 }")
+            {{ team.adjustedPointDiff }}
+        %td 
+          %span(ng-class="{'text-success': team.averageAdjustedPointDiff > 0,
+                           'text-danger': team.averageAdjustedPointDiff < 0 }")
+            {{ "%.3f" | sprintf: team.averageAdjustedPointDiff }}
         %td
           {{ "%.3f" | sprintf: team.winPercent }}
         %td 

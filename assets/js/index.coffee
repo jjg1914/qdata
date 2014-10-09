@@ -171,7 +171,18 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runAverageQPD = ->
+  _runAveragePointDiff = ->
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      if team._statsGames.length > 0
+        team.averagePointDiff = team.pointDiff / team._statsGames.length
+      else
+        team.averagePointDiff = 0
+      cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runAdjustedPointDiff = ->
     q = $q.defer()
     async.each _teams, (team,cb) ->
       async.waterfall [
@@ -181,20 +192,29 @@ qdata.factory "statsEngine", ($q,games,teams) ->
             i = game.teams.indexOf team.name
             pf = game._statsScores[i]
             pa = game._statsScores[1 - i]
-            cb null, Math.min pf - pa, 120
+            cb null, Math.max(Math.min(pf - pa, 120), -120)
           , cb
         (qpds,cb) ->
           async.reduce qpds, 0, (m,qpd,cb) ->
             cb null, m + qpd
           , cb
       ], (err,result) ->
-        if team._statsGames.length > 0
-          team.averageQPD = result / team._statsGames.length
-        else
-          team.averageQPD = 0
+        team.adjustedPointDiff = result
         cb()
     , -> q.resolve()
     return q.promise
+
+  _runAverageAdjustedPointDiff = ->
+    q = $q.defer()
+    async.each _teams, (team,cb) ->
+      if team._statsGames.length > 0
+        team.averageAdjustedPointDiff = team.adjustedPointDiff / team._statsGames.length
+      else
+        team.averageAdjustedPointDiff = 0
+      cb()
+    , -> q.resolve()
+    return q.promise
+
 
   _runPWins = ->
     q = $q.defer()
@@ -322,8 +342,8 @@ qdata.factory "statsEngine", ($q,games,teams) ->
         $q.all([
           _runPointsFor()
           _runPointsAgainst()
-        ]).then -> _runPointDiff()
-        _runAverageQPD()
+        ]).then -> _runPointDiff().then -> _runAveragePointDiff()
+        _runAdjustedPointDiff().then -> _runAverageAdjustedPointDiff()
         _runPWins()
       ])
 
@@ -446,9 +466,6 @@ qdata.controller "TeamsController", ($scope,$filter,ngTableParams,teams,statsEng
           regionFilter = $scope.filter.region == "all" || value.region == $scope.filter.region
           nameFilter = value.name.toLowerCase().indexOf($scope.filter.name.toLowerCase()) >= 0
           
-          console.log gameFilter
-          console.log regionFilter
-          console.log nameFilter
           gameFilter && regionFilter && nameFilter
 
         data = if params.sorting()
