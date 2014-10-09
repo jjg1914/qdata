@@ -1,0 +1,27 @@
+---
+- name: RIT Dark Marks
+  region: ne
+- name: Alfred University
+  region: ne
+- name: Syracuse University Quidditch Club
+  region: ne
+- name: RPI Remembralls
+  region: ne
+- name: SUNY Geneseo
+  region: ne
+- name: Capable Rochester Area Players
+  region: ne
+- name: University of Rochester Thestrals
+  region: ne
+- name: SUNY Cortland
+  region: ne
+- name: Garbage Plates United
+  region: ne
+- name: Mansfield University
+  region: ne
+- name: SUNY Fredonia
+  region: ne
+- name: Ithaca Community Quidditch Team
+  region: ne
+- name: Mighty Ducks
+  region: ne

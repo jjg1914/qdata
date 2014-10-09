@@ -1,0 +1,273 @@
+---
+- date: 2014-09-20
+  teams:
+    - SUNY Geneseo
+    - Ithaca Community Quidditch Team
+  scores:
+    -
+      - 110
+    -
+      - 30
+  catches: 
+    - 1
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - University of Rochester Thestrals
+    - RIT Dark Marks
+  scores:
+    -
+      - 0
+    -
+      - 90
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - SUNY Geneseo
+    - RIT Dark Marks
+  scores:
+    -
+      - 50
+    -
+      - 90
+  catches: 
+    - 1
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - RIT Dark Marks
+    - Ithaca Community Quidditch Team
+  scores:
+    -
+      - 180
+    -
+      - 10
+  catches: 
+    - 1
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - Ithaca Community Quidditch Team
+    - University of Rochester Thestrals
+  scores:
+    -
+      - 0
+    -
+      - 100
+  catches: 
+    - 1
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - SUNY Geneseo
+    - University of Rochester Thestrals
+  scores:
+    -
+      - 60
+    -
+      - 70
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - RPI Remembralls
+    - Mansfield University
+  scores:
+    -
+      - 160
+    -
+      - 30
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - Capable Rochester Area Players
+    - Garbage Plates United
+  scores:
+    -
+      - 70
+    -
+      - 0
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - Capable Rochester Area Players
+    - Mansfield University
+  scores:
+    -
+      - 120
+    -
+      - 60
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - RPI Remembralls
+    - Capable Rochester Area Players
+  scores:
+    -
+      - 110
+    -
+      - 10
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - RPI Remembralls
+    - Garbage Plates United
+  scores:
+    -
+      - 110
+    -
+      - 30
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - Garbage Plates United
+    - Mansfield University
+  scores:
+    -
+      - 60
+    -
+      - 60
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - Syracuse University Quidditch Club
+    - SUNY Fredonia
+  scores:
+    -
+      - 120
+    -
+      - 0
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - SUNY Cortland
+    - SUNY Fredonia
+  scores:
+    -
+      - 70
+    -
+      - 60
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - University of Rochester Thestrals
+    - Syracuse University Quidditch Club
+  scores:
+    -
+      - 70
+    -
+      - 20
+  catches: 
+    - 1
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - Syracuse University Quidditch Club
+    - SUNY Cortland
+  scores:
+    -
+      - 150
+    -
+      - 20
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - RIT Dark Marks
+    - RPI Remembralls
+  scores:
+    -
+      - 60
+    -
+      - 30
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - Syracuse University Quidditch Club
+    - Mighty Ducks
+  scores:
+    -
+      - 110
+    -
+      - 20
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - SUNY Cortland
+    - Mighty Ducks
+  scores:
+    -
+      - 120
+    -
+      - 50
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - Mighty Ducks
+    - SUNY Fredonia
+  scores:
+    -
+      - 70
+    -
+      - 50
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-28
+  teams:
+    - Alfred University
+    - Mansfield University
+  scores:
+    -
+      - 110
+    -
+      - 60
+  catches: 
+    - 0
+  round: 0

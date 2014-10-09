@@ -13,28 +13,38 @@
   .col-md-9
     %ul.list-group
       %li.list-group-item(ng-repeat="game in games | filter: gameFilter | orderBy: ['date', 'round']:true")
-        .row
-          .col-md-12.box-score-col.text-muted
-            {{ game.date | formatDate }}
-        .row
-          .col-md-5.box-score-col
-            %div
+        .container-fluid
+          .row
+            .col-md-12.box-score-col.text-muted
+              {{ game.date | formatDate }}
+          .row
+            .col-md-5.box-score-col
               %em.text-muted {{ game.event }}
-            %div {{ game.teams[0] }}
-            %div {{ game.teams[1] }}
-          .col-md-1.box-score-col.box-score-final-col
-            .text-muted Final
-            %div {{ game | formatFinalScore:0 }}
-            %div {{ game | formatFinalScore:1 }}
-          .col-md-2.box-score-col
-            .text-muted Regulation
-            %div {{ game | formatScore:0:0 }}
-            %div {{ game | formatScore:1:0 }}
-          .col-md-2.box-score-col(ng-if="game.catches.length > 1")
-            .text-muted Overtime
-            %div {{ game | formatScore:0:1 }}
-            %div {{ game | formatScore:1:1 }}
-          .col-md-2.box-score-col(ng-if="game.catches.length > 2")
-            .text-muted Sudden Death
-            %div {{ game | formatScore:0:2 }}
-            %div {{ game | formatScore:1:2 }}
+              %br
+              - {{ game.teams[0] }}
+              %br
+              - {{ game.teams[1] }}
+            .col-md-1.box-score-col.box-score-final-col
+              .text-muted Final
+              %br
+              - {{ game | formatFinalScore:0 }}
+              %br
+              - {{ game | formatFinalScore:1 }}
+            .col-md-2.box-score-col
+              .text-muted Regulation
+              %br
+              - {{ game | formatScore:0:0 }}
+              %br
+              - {{ game | formatScore:1:0 }}
+            .col-md-2.box-score-col(ng-if="game.catches.length > 1")
+              .text-muted Overtime
+              %br
+              - {{ game | formatScore:0:1 }}
+              %br
+              - {{ game | formatScore:1:1 }}
+            .col-md-2.box-score-col(ng-if="game.catches.length > 2")
+              .text-muted Sudden Death
+              %br
+              - {{ game | formatScore:0:2 }}
+              %br
+              - {{ game | formatScore:1:2 }}

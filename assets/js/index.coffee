@@ -376,7 +376,7 @@ qdata.controller "GamesController", ($scope,games) ->
     $scope.games = data
 
     tmp = {}
-    for game in data
+    for game in data when game.event?
       tmp[game.event] = true
     $scope.events = ( k for k,v of tmp )
     $scope.event = "all"

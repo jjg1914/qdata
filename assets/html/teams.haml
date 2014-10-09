@@ -8,7 +8,7 @@
         %br
         %input.form-control(type="number" name="minimumGames"
                             min="0" step="1" ng-model="minimumGames")
-      .form-group
+      -#.form-group
         %label(for="region") Region
         %br
         %select.form-control(name="region" ng-model="region")
@@ -24,7 +24,7 @@
   %tbody
     %tr(ng-repeat="team in $data")
       %td(data-title="'Name'" data-sortable="'name'") {{ team.name }}
-      %td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
+      /%td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
       %td(data-title="'G'" data-sortable="'games'") {{ team.games }}
       %td(data-title="'W'" data-sortable="'wins'") {{ team.wins }}
       %td(data-title="'L'" data-sortable="'loses'") {{ team.loses }}
