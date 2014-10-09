@@ -431,9 +431,9 @@ qdata.directive "qTh", ->
       $scope.tableParams.isSortBy qField, "desc"
     , (newValue) ->
       if newValue
-        $element.addClass "sort-asc"
+        $element.addClass "sort-desc"
       else
-        $element.removeClass "sort-asc"
+        $element.removeClass "sort-desc"
 
     $element.click ->
       options = {}
