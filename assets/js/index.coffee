@@ -387,12 +387,52 @@ qdata.directive "qGameFinalScore", ->
       $scope.score += score
     $scope.score += 30 for c in $scope.qGame.catches when c == $scope.qTeamIndex
 
+qdata.directive "qTh", ->
+  restrict: "A"
+  link: ($scope,$element,attributes) ->
+    qField = undefined
+
+    $scope.$watch ->
+      $scope.$eval attributes.qTh
+    , (newValue) ->
+      qField = newValue
+
+    $element.addClass "sortable"
+
+    $scope.$watch ->
+      $scope.tableParams.isSortBy qField, "asc"
+    , (newValue) ->
+      if newValue
+        $element.addClass "sort-asc"
+      else
+        $element.removeClass "sort-asc"
+
+    $scope.$watch ->
+      $scope.tableParams.isSortBy qField, "desc"
+    , (newValue) ->
+      if newValue
+        $element.addClass "sort-asc"
+      else
+        $element.removeClass "sort-asc"
+
+    $element.click ->
+      options = {}
+      options[qField] = if $scope.tableParams.isSortBy qField, 'asc'
+        'desc'
+      else
+        'asc'
+      $scope.$apply ->
+        $scope.tableParams.sorting options
+
 qdata.controller "TeamsController", ($scope,$filter,ngTableParams,teams,statsEngine) ->
   statsEngine.run().then ->
     $scope.tableParams.reload()
+    $scope.tableParams.sorting wins: "desc"
 
-  $scope.minimumGames = 1
-  $scope.region = "all"
+  $scope.filter =
+    games: 1
+    region: "all"
+    name: ""
 
   $scope.tableParams = new ngTableParams { page: 1, count: 1024 },
     total: 1
@@ -402,8 +442,14 @@ qdata.controller "TeamsController", ($scope,$filter,ngTableParams,teams,statsEng
         params.total(data.length)
 
         data = $filter("filter") data, (value) ->
-          value.games >= $scope.minimumGames &&
-          ( $scope.region == "all" || value.region == $scope.region )
+          gameFilter = value.games >= $scope.filter.games
+          regionFilter = $scope.filter.region == "all" || value.region == $scope.filter.region
+          nameFilter = value.name.toLowerCase().indexOf($scope.filter.name.toLowerCase()) >= 0
+          
+          console.log gameFilter
+          console.log regionFilter
+          console.log nameFilter
+          gameFilter && regionFilter && nameFilter
 
         data = if params.sorting()
           $filter("orderBy")(data, params.orderBy())
@@ -412,10 +458,9 @@ qdata.controller "TeamsController", ($scope,$filter,ngTableParams,teams,statsEng
 
         $defer.resolve(data)
 
-  $scope.$watch "minimumGames", ->
+  $scope.$watch "filter.games", ->
     $scope.tableParams.reload()
-
-  $scope.$watch "region", ->
+  $scope.$watch "filter.name", ->
     $scope.tableParams.reload()
 
 qdata.controller "GamesController", ($scope,games) ->
@@ -426,10 +471,14 @@ qdata.controller "GamesController", ($scope,games) ->
     for game in data when game.event?
       tmp[game.event] = true
     $scope.events = ( k for k,v of tmp )
-    $scope.event = "all"
+    $scope.filter =
+      event: "all"
+      team: ""
 
     $scope.gameFilter = (game) ->
-      $scope.event == "all" or game.event == $scope.event
+      nameFilter = (team for team in game.teams when team.toLowerCase().indexOf($scope.filter.team.toLowerCase()) >= 0)
+      ( $scope.filter.event == "all" or game.event == $scope.filter.event ) and nameFilter.length > 0
+
 
 qdata.controller "ApplicationController", ($scope,$location) ->
   $scope.navPath = ->

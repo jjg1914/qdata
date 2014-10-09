@@ -4,14 +4,18 @@
   .panel-body
     %form.form-inline(role="form")
       .form-group
-        %label(for="minimumGames") Minimum Games
+        %label(for="name") Name
         %br
-        %input.form-control(type="number" name="minimumGames"
-                            min="0" step="1" ng-model="minimumGames")
+        %input.form-control(type="text" name="name" ng-model="filter.name")
+      .form-group
+        %label(for="games") Games
+        %br
+        %input.form-control(type="number" name="games"
+                            min="0" step="1" ng-model="filter.games")
       -#.form-group
         %label(for="region") Region
         %br
-        %select.form-control(name="region" ng-model="region")
+        %select.form-control(name="region" ng-model="filter.region")
           %option(value="all") All
           %option(value="ma") {{ "ma" | formatRegion }}
           %option(value="mw") {{ "mw" | formatRegion }}
@@ -20,26 +24,67 @@
           %option(value="s") {{ "s" | formatRegion }}
           %option(value="sw") {{ "sw" | formatRegion }}
           %option(value="w") {{ "w" | formatRegion }}
-%table.table(ng-table="tableParams")
-  %tbody
-    %tr(ng-repeat="team in $data")
-      %td(data-title="'Name'" data-sortable="'name'") {{ team.name }}
-      /%td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
-      %td(data-title="'G'" data-sortable="'games'") {{ team.games }}
-      %td(data-title="'W'" data-sortable="'wins'") {{ team.wins }}
-      %td(data-title="'L'" data-sortable="'loses'") {{ team.loses }}
-      %td(data-title="'S'" data-sortable="'catches'") {{ team.catches }}
-      %td(data-title="'PF'" data-sortable="'pointsFor'") {{ team.pointsFor }}
-      %td(data-title="'PA'" data-sortable="'pointsAgainst'") {{ team.pointsAgainst }}
-      %td(data-title="'PD'" data-sortable="'pointDiff'")
-        %span(ng-class="{'text-success': team.pointDiff > 0,
-                         'text-danger': team.pointDiff < 0 }")
-          {{ team.pointDiff }}
-      %td(data-title="'Average QPD'" data-sortable="'averageQPD'") 
-        {{ "%.3f" | sprintf: team.averageQPD }}
-      %td(data-title="'W%'" data-sortable="'winPercent'")
-        {{ "%.3f" | sprintf: team.winPercent }}
-      %td(data-title="'PW'" data-sortable="'pwins'") 
-        {{ "%.3f" | sprintf: team.pwins }}
-      %td(data-title="'SoS'" data-sortable="'sos'")
-        {{ "%.3f" | sprintf: team.sos }}
+.table-responsive
+  %table.table.table-hover(ng-table="tableParams")
+    %thead
+      %tr
+        %th(q-th="'name'") 
+          %div(title="Team Name")
+            Team
+        %th(q-th="'game'")
+          %div(title="Games Played")
+            G
+        %th(q-th="'wins'")
+          %div(title="Wins")
+            W
+        %th(q-th="'loses'")
+          %div(title="Losses")
+            L
+        %th(q-th="'catches'")
+          %div(title="Snitch Catches")
+            S
+        %th(q-th="'pointsFor'") 
+          %div(title="Points For")
+            PF
+        %th(q-th="'pointsAgainst'") 
+          %div(title="Points Against")
+            PA
+        %th(q-th="'pointDiff'")
+          %div(title="Point Difference")
+            PD
+        %th(q-th="'averageQPD'")
+          %div(title="Average Point Difference")
+            %span.overline PD
+        %th(q-th="'winPercent'")
+          %div(title="Win Percentage")
+            W%
+        %th(q-th="'pwins'")
+          %div(title="Pythagorean Wins")
+            PW
+        %th(q-th="'sos'")
+          %div(title="Strength of Schedule")
+            SoS
+    %tbody
+      %tr(ng-repeat="team in $data")
+        %td {{ team.name }}
+        /%td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
+        %td {{ team.games }}
+        %td {{ team.wins }}
+        %td {{ team.loses }}
+        %td {{ team.catches }}
+        %td {{ team.pointsFor }}
+        %td {{ team.pointsAgainst }}
+        %td
+          %span(ng-class="{'text-success': team.pointDiff > 0,
+                           'text-danger': team.pointDiff < 0 }")
+            {{ team.pointDiff }}
+        %td 
+          %span(ng-class="{'text-success': team.averageQPD > 0,
+                           'text-danger': team.averageQPD < 0 }")
+            {{ "%.3f" | sprintf: team.averageQPD }}
+        %td
+          {{ "%.3f" | sprintf: team.winPercent }}
+        %td 
+          {{ "%.3f" | sprintf: team.pwins }}
+        %td
+          {{ "%.3f" | sprintf: team.sos }}
