@@ -14,6 +14,7 @@ module.exports = (grunt) ->
           compass: true
           loadPath: [
             "public/bower_components/bootstrap-sass-official/assets/stylesheets/"
+            "public/bower_components/font-awesome/scss/"
           ]
         expand: true
         cwd: 'assets/css'
@@ -54,6 +55,22 @@ module.exports = (grunt) ->
         src: [ '**/*.yaml' ]
         dest: 'public/'
         ext: '.json'
+    copy:
+      fonts:
+        files: [
+          {
+            expand: true
+            cwd: "public/bower_components/font-awesome"
+            src: [ "fonts/**" ]
+            dest: "public/"
+          }
+          {
+            expand: true
+            cwd: "public/bower_components/bootstrap-sass-official/assets"
+            src: [ "fonts/**" ]
+            dest: "public/"
+          }
+        ]
     ngAnnotate:
       options:
         singleQuotes: true
@@ -125,6 +142,7 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'build', [
+    'copy:fonts'
     'coffee:assets'
     'sass:assets'
     'haml:assets'
@@ -132,6 +150,7 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'dist', [
+    'copy:fonts'
     'coffee:assets'
     'ngAnnotate'
     'uglify:dist'

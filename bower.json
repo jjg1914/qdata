@@ -7,6 +7,8 @@
     "moment": "~2.8",
     "bootstrap-sass-official": "~3.2",
     "async": "https://github.com/caolan/async.git#v0.2.5",
-    "sprintf": "~1.0"
+    "sprintf": "~1.0",
+    "oauth-js": "~0.2",
+    "font-awesome": "~4.2"
   }
 }

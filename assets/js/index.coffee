@@ -1,3 +1,5 @@
+OAuth.initialize "72Zgv_nLtMNhlbe3S9UAnHIbyng"
+
 qdata = angular.module "qdata", [ "ngRoute", "ngTable" ]
 
 qdata.config ($routeProvider) ->
@@ -500,3 +502,26 @@ qdata.controller "GamesController", ($scope,games) ->
 qdata.controller "ApplicationController", ($scope,$location) ->
   $scope.navPath = ->
     $location.path()
+
+  if localStorage["accessToken"]
+    $scope.auth = OAuth.create "google", access_token: localStorage["accessToken"]
+    if $scope.auth
+      $scope.auth.me().done (me) ->
+        $scope.$apply ->
+          $scope.me =
+            displayName: me.name
+            avatar: me.avatar
+
+  $scope.login = ->
+    OAuth.popup("google").done (result) ->
+      localStorage["accessToken"] = result.access_token
+      $scope.auth = result
+      result.me().done (me) ->
+        $scope.$apply ->
+          $scope.me =
+            displayName: me.name
+            avatar: me.avatar
+
+  $scope.logout = ->
+    delete $scope.me
+    delete localStorage["accessToken"]
