@@ -1,7 +1,9 @@
 .panel.panel-default
-  .panel-heading
-    %h3.panel-title Filters
-  .panel-body
+  .panel-heading.q-action(ng-click="showFilters = !showFilters")
+    %h3.panel-title
+      %i.fa(ng-class="{'fa-chevron-down': !showFilters, 'fa-chevron-up': showFilters}")
+      Filters
+  .panel-body(ng-if="showFilters")
     %form.form-inline(role="form")
       .form-group
         %label(for="name") Name
