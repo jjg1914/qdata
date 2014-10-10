@@ -1,6 +1,6 @@
 OAuth.initialize "72Zgv_nLtMNhlbe3S9UAnHIbyng"
 
-qdata = angular.module "qdata", [ "ngRoute", "ngTable" ]
+qdata = angular.module "qdata", [ "ngRoute" ]
 
 qdata.config ($routeProvider) ->
   $routeProvider.when "/teams",
@@ -409,78 +409,64 @@ qdata.directive "qGameFinalScore", ->
       $scope.score += score
     $scope.score += 30 for c in $scope.qGame.catches when c == $scope.qTeamIndex
 
-qdata.directive "qTh", ->
+qdata.directive "qSortable", ->
   restrict: "A"
   link: ($scope,$element,attributes) ->
-    qField = undefined
-
+    qSortable = {}
     $scope.$watch ->
-      $scope.$eval attributes.qTh
+      $scope.$eval attributes.qSortable
     , (newValue) ->
-      qField = newValue
+      qSortable = newValue
+    , true
 
-    $element.addClass "sortable"
-
-    $scope.$watch ->
-      $scope.tableParams.isSortBy qField, "asc"
-    , (newValue) ->
-      if newValue
-        $element.addClass "sort-asc"
-      else
-        $element.removeClass "sort-asc"
-
-    $scope.$watch ->
-      $scope.tableParams.isSortBy qField, "desc"
-    , (newValue) ->
-      if newValue
-        $element.addClass "sort-desc"
-      else
-        $element.removeClass "sort-desc"
+    $icon = $("<i></i>").addClass("fa").appendTo($element)
 
     $element.click ->
-      options = {}
-      options[qField] = if $scope.tableParams.isSortBy qField, 'asc'
-        'desc'
-      else
-        'asc'
       $scope.$apply ->
-        $scope.tableParams.sorting options
+        if $scope.sort.field == qSortable.field
+          $scope.sort.desc = !$scope.sort.desc
+        else
+          $scope.sort.field = qSortable.field
+          $scope.sort.desc = qSortable.desc
 
-qdata.controller "TeamsController", ($scope,$filter,ngTableParams,teams,statsEngine) ->
+    $scope.$watch "sort", (newValue) ->
+      icon = qSortable.type || "amount"
+      if newValue.field == qSortable.field
+        $element.addClass "bg-info"
+        $icon.removeClass "fa-sort"
+        if newValue.desc
+          $icon.removeClass "fa-sort-" + icon + "-asc"
+          $icon.addClass "fa-sort-" + icon + "-desc"
+        else
+          $icon.removeClass "fa-sort-" + icon + "-desc"
+          $icon.addClass "fa-sort-" + icon + "-asc"
+      else
+        $element.removeClass "bg-info"
+        $icon.removeClass "fa-sort-" + icon + "-asc"
+        $icon.removeClass "fa-sort-" + icon + "-desc"
+        $icon.addClass "fa-sort"
+    , true
+
+qdata.controller "TeamsController", ($scope,$filter,teams,statsEngine) ->
   statsEngine.run().then ->
-    $scope.tableParams.reload()
-    $scope.tableParams.sorting wins: "desc"
+    teams.all().then (teams) ->
+      $scope.teams = teams
 
   $scope.filter =
     games: 1
     region: "all"
     name: ""
 
-  $scope.tableParams = new ngTableParams { page: 1, count: 1024 },
-    total: 1
-    counts: [],
-    getData: ($defer,params) ->
-      teams.all().then (data) ->
-        params.total(data.length)
+  $scope.sort =
+    field: "wins"
+    desc: true
 
-        data = $filter("filter") data, (value) ->
-          gameFilter = value.games >= $scope.filter.games
-          regionFilter = $scope.filter.region == "all" || value.region == $scope.filter.region
-          nameFilter = value.name.toLowerCase().indexOf($scope.filter.name.toLowerCase()) >= 0
-          
-          gameFilter && regionFilter && nameFilter
-
-        data = if params.sorting()
-          $filter("orderBy")(data, params.orderBy())
-        else
-          data
-
-        $defer.resolve(data)
-
-  $scope.$watch "filter.games", ->
-    $scope.tableParams.reload()
-  $scope.$watch "filter.name", ->
-    $scope.tableParams.reload()
+  $scope.filterp = (value) ->
+    gameFilter = value.games >= $scope.filter.games
+    regionFilter = $scope.filter.region == "all" || value.region == $scope.filter.region
+    nameFilter = value.name.toLowerCase().indexOf($scope.filter.name.toLowerCase()) >= 0
+    
+    gameFilter && regionFilter && nameFilter
 
 qdata.controller "GamesController", ($scope,games) ->
   games.all().then (data) ->

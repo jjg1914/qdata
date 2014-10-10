@@ -27,53 +27,39 @@
           %option(value="sw") {{ "sw" | formatRegion }}
           %option(value="w") {{ "w" | formatRegion }}
 .table-responsive
-  %table.table.table-hover(ng-table="tableParams")
+  %table.table.table-hover
     %thead
       %tr
-        %th(q-th="'name'") 
-          %div(title="Team Name")
-            Team
-        %th(q-th="'games'")
-          %div(title="Games Played")
-            G
-        %th(q-th="'wins'")
-          %div(title="Wins")
-            W
-        %th(q-th="'loses'")
-          %div(title="Losses")
-            L
-        %th(q-th="'catches'")
-          %div(title="Snitch Catches")
-            S
-        %th(q-th="'pointsFor'") 
-          %div(title="Points For")
-            PF
-        %th(q-th="'pointsAgainst'") 
-          %div(title="Points Against")
-            PA
-        %th(q-th="'pointDiff'")
-          %div(title="Point Difference")
-            PD
-        %th(q-th="'averagePointDiff'")
-          %div(title="Average Point Difference")
-            %span.overline PD
-        %th(q-th="'adjustedPointDiff'")
-          %div(title="Adjusted Point Difference")
-            PD*
-        %th(q-th="'averageAdjustedPointDiff'")
-          %div(title="Average Adjusted Point Difference")
-            %span.overline PD*
-        %th(q-th="'winPercent'")
-          %div(title="Win Percentage")
-            W%
-        %th(q-th="'pwins'")
-          %div(title="Pythagorean Wins")
-            PW
-        %th(q-th="'sos'")
-          %div(title="Strength of Schedule")
-            SoS
+        %th.q-action(title="Team Name" q-sortable="{ field: 'name', type: 'alpha' }")
+          Team
+        %th.q-action(title="Games Played" q-sortable="{ field: 'games', type: 'numeric', desc: true }")
+          G
+        %th.q-action(title="Wins" q-sortable="{ field: 'wins', type: 'numeric', desc: true }")
+          W
+        %th.q-action(title="Losses" q-sortable="{ field: 'loses', type: 'numeric', desc: true }")
+          L
+        %th.q-action(title="Snitch Catches" q-sortable="{ field: 'catches', type: 'numeric', desc: true }")
+          S
+        %th.q-action(title="Points For" q-sortable="{ field: 'pointsFor', type: 'numeric', desc: true }")
+          PF
+        %th.q-action(title="Points Against" q-sortable="{ field: 'pointsAgainst', type: 'numeric', desc: true }")
+          PA
+        %th.q-action(title="Point Difference" q-sortable="{ field: 'pointDiff', type: 'numeric', desc: true }")
+          PD
+        %th.q-action(title="Average Point Difference" q-sortable="{ field: 'averagePointDiff', type: 'numeric', desc: true }")
+          %span.overline PD
+        %th.q-action(title="Adjusted Point Difference" q-sortable="{ field: 'adjustedPointDiff', type: 'numeric', desc: true }")
+          PD*
+        %th.q-action(title="Average Adjusted Point Difference" q-sortable="{ field: 'averageAdjustedPointDiff', type: 'numeric', desc: true }")
+          %span.overline PD*
+        %th.q-action(title="Win Percentage" q-sortable="{ field: 'winPercent', type: 'numeric', desc: true }")
+          W%
+        %th.q-action(title="Pythagorean Wins" q-sortable="{ field: 'pwins', type: 'numeric', desc: true }")
+          PW
+        %th.q-action(title="Strength of Schedule" q-sortable="{ field: 'sos', type: 'numeric', desc: true }")
+          SoS
     %tbody
-      %tr(ng-repeat="team in $data")
+      %tr(ng-repeat="team in teams | filter: filterp | orderBy: sort.field : sort.desc")
         %td {{ team.name }}
         /%td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
         %td {{ team.games }}

@@ -85,7 +85,6 @@ module.exports = (grunt) ->
             'public/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js'
             'public/bower_components/angular/angular.js'
             'public/bower_components/angular-route/angular-route.js'
-            'public/bower_components/ng-table/ng-table.js'
             'public/bower_components/moment/moment.js'
             'public/bower_components/async/lib/async.js'
             'public/bower_components/sprintf/src/sprintf.js'
