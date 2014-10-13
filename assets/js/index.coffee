@@ -421,6 +421,8 @@ qdata.directive "qSortable", ->
 
     $icon = $("<i></i>").addClass("fa").appendTo($element)
 
+    $element.addClass "q-sortable"
+
     $element.click ->
       $scope.$apply ->
         if $scope.sort.field == qSortable.field
