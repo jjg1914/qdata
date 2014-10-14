@@ -6,14 +6,22 @@
   .panel-body(ng-if="showFilters")
     %form.form-inline(role="form")
       .form-group
-        %label(for="name") Name
+        %label(for="name") Team
         %br
         %input.form-control(type="text" name="name" ng-model="filter.name")
       .form-group
-        %label(for="games") Games
+        %label(for="games") Minimum Games
         %br
         %input.form-control(type="number" name="games"
                             min="0" step="1" ng-model="filter.games")
+      .form-group
+        %label(for="start_date") Start Date
+        %br
+        %q-datepicker(ng-model="filter.startDate")
+      .form-group
+        %label(for="end_date") End Date
+        %br
+        %q-datepicker(ng-model="filter.endDate")
       -#.form-group
         %label(for="region") Region
         %br
@@ -60,33 +68,33 @@
           SoS
     %tbody
       %tr(ng-repeat="team in teams | filter: filterp | orderBy: sort.field : sort.desc")
-        %td {{ team.name }}
+        %td {{ team.name | statfmt }}
         /%td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
-        %td {{ team.games }}
-        %td {{ team.wins }}
-        %td {{ team.loses }}
-        %td {{ team.catches }}
-        %td {{ team.pointsFor }}
-        %td {{ team.pointsAgainst }}
+        %td {{ team.games | statfmt }}
+        %td {{ team.wins | statfmt }}
+        %td {{ team.loses | statfmt }}
+        %td {{ team.catches | statfmt }}
+        %td {{ team.pointsFor | statfmt }}
+        %td {{ team.pointsAgainst | statfmt }}
         %td
           %span(ng-class="{'text-success': team.pointDiff > 0,
                            'text-danger': team.pointDiff < 0 }")
-            {{ team.pointDiff }}
+            {{ team.pointDiff | statfmt }}
         %td
           %span(ng-class="{'text-success': team.averagePointDiff > 0,
                            'text-danger': team.averagePointDiff < 0 }")
-            {{ "%.3f" | sprintf: team.averagePointDiff }}
+            {{ team.averagePointDiff | statfmt: "%.3f" }}
         %td 
           %span(ng-class="{'text-success': team.adjustedPointDiff > 0,
                            'text-danger': team.adjustedPointDiff < 0 }")
-            {{ team.adjustedPointDiff }}
+            {{ team.adjustedPointDiff | statfmt }}
         %td 
           %span(ng-class="{'text-success': team.averageAdjustedPointDiff > 0,
                            'text-danger': team.averageAdjustedPointDiff < 0 }")
-            {{ "%.3f" | sprintf: team.averageAdjustedPointDiff }}
+            {{ team.averageAdjustedPointDiff | statfmt: "%.3f" }}
         %td
-          {{ "%.3f" | sprintf: team.winPercent }}
+          {{ team.winPercent | statfmt: "%.3f" }}
         %td 
-          {{ "%.3f" | sprintf: team.pwins }}
+          {{ team.pwins | statfmt: "%.3f" }}
         %td
-          {{ "%.3f" | sprintf: team.sos }}
+          {{ team.sos | statfmt: "%.3f" }}

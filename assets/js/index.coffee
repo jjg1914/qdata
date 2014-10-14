@@ -1,6 +1,9 @@
 OAuth.initialize "72Zgv_nLtMNhlbe3S9UAnHIbyng"
 
-qdata = angular.module "qdata", [ "ngRoute" ]
+qdata = angular.module "qdata", [
+  "ngRoute"
+  "ui.bootstrap"
+]
 
 qdata.config ($routeProvider) ->
   $routeProvider.when "/teams",
@@ -38,82 +41,87 @@ qdata.factory "games", ($q,$http) ->
     result = []
     for game, i in data.data
       game.id = i
+      game.date = moment(game.date).add(4, "hours").toDate()
       result.push game
     _data.resolve result
 
   all: -> _data.promise
 
 qdata.factory "statsEngine", ($q,games,teams) ->
-  _teams = []
-  _games = []
-  _teamCache = {}
-
-  _preRun = ->
-    _teams.length = 0
-    _games.length = 0
+  _preRun = (runEnv,options) ->
     $q.all([teams.all(), games.all()]).then (data) ->
       q = $q.defer()
       async.series [
         (cb) -> async.each data[0], (team,cb) ->
-          _teamCache[team.name] = _teams.length
+          team = angular.copy team
+          runEnv.teamCache[team.name] = runEnv.teams.length
           team._statsGames = []
-          _teams.push team
-
+          runEnv.teams.push team
           cb()
         , cb
-        (cb) -> async.each data[1], (game,cb) ->
-          _team0i = _teamCache[game.teams[0]]
-          _team1i = _teamCache[game.teams[1]]
-          game._statsTeams = [ _team0i, _team1i ]
+        (cb) -> async.waterfall [
+          (cb) -> async.filter data[1], (game,cb) ->
+            cb(
+              (!options.startDate? or
+                (moment(game.date).isSame(options.startDate) or
+                  moment(game.date).isAfter(options.startDate))) and
+              (!options.endDate? or
+                (moment(game.date).isSame(options.endDate) or
+                  moment(game.date).isBefore(options.endDate))))
+          , (result) -> cb null, result
+          (games,cb) -> async.each games, (game,cb) ->
+            game = angular.copy game
+            _team0i = runEnv.teamCache[game.teams[0]]
+            _team1i = runEnv.teamCache[game.teams[1]]
+            game._statsTeams = [ _team0i, _team1i ]
 
-          _teams[_team0i]._statsGames.push _games.length
-          _teams[_team1i]._statsGames.push _games.length
-          _games.push game
+            runEnv.teams[_team0i]._statsGames.push runEnv.games.length
+            runEnv.teams[_team1i]._statsGames.push runEnv.games.length
+            runEnv.games.push game
 
-          game._statsScores = [ 0, 0 ]
-          for row, i in game.scores
-            for score in row
-              game._statsScores[i] += score
+            game._statsScores = [ 0, 0 ]
+            for row, i in game.scores
+              for score in row
+                game._statsScores[i] += score
 
-          game._statsFinalScores = game._statsScores.slice 0
-          for c in game.catches
-            game._statsFinalScores[c] += 30 if c >= 0
+            game._statsFinalScores = game._statsScores.slice 0
+            for c in game.catches
+              game._statsFinalScores[c] += 30 if c >= 0
 
-          cb()
-        , cb
+            cb()
+          , cb
+        ], -> cb()
       ], -> q.resolve()
       return q.promise
 
-  _runGames = ->
-    teams.all().then (teams) ->
-      q = $q.defer()
-      async.each teams, (team,cb) ->
-        team.games = team._statsGames.length
-        cb()
-      , q.resolve()
-      return q.promise
-  
-  _runWins = ->
-    teams.all().then (teams) ->
-      q = $q.defer()
-      async.each teams, (team,cb) ->
-        async.reduce team._statsGames, 0, (m,gamei,cb) ->
-          game = _games[gamei]
-          i = game.teams.indexOf team.name
-          _score0 = game._statsFinalScores[i]
-          _score1 = game._statsFinalScores[1 - i]
-          cb null, if _score0 > _score1 then m + 1 else m
-        , (err,result) ->
-          team.wins = result
-          cb()
-      , -> q.resolve()
-      return q.promise
-
-  _runLoses = ->
+  _runGames = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
+      team.games = team._statsGames.length
+      cb()
+    , -> q.resolve()
+    return q.promise
+  
+  _runWins = (runEnv) ->
+    q = $q.defer()
+    async.each runEnv.teams, (team,cb) ->
       async.reduce team._statsGames, 0, (m,gamei,cb) ->
-        game = _games[gamei]
+        game = runEnv.games[gamei]
+        i = game.teams.indexOf team.name
+        _score0 = game._statsFinalScores[i]
+        _score1 = game._statsFinalScores[1 - i]
+        cb null, if _score0 > _score1 then m + 1 else m
+      , (err,result) ->
+        team.wins = result
+        cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runLoses = (runEnv) ->
+    q = $q.defer()
+    async.each runEnv.teams, (team,cb) ->
+      async.reduce team._statsGames, 0, (m,gamei,cb) ->
+        game = runEnv.games[gamei]
         i = game.teams.indexOf team.name
         _score0 = game._statsFinalScores[i]
         _score1 = game._statsFinalScores[1 - i]
@@ -124,11 +132,11 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runCatches = ->
+  _runCatches = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       async.reduce team._statsGames, 0, (m,gamei,cb) ->
-        game = _games[gamei]
+        game = runEnv.games[gamei]
         i = game.teams.indexOf team.name
         count = 0
         count += 1 for c in game.catches when c == i
@@ -139,11 +147,11 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runPointsFor = ->
+  _runPointsFor = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       async.reduce team._statsGames, 0, (m,gamei,cb) ->
-        game = _games[gamei]
+        game = runEnv.games[gamei]
         i = game.teams.indexOf team.name
         cb null, m + game._statsScores[i]
       , (err,result) ->
@@ -152,11 +160,11 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runPointsAgainst = ->
+  _runPointsAgainst = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       async.reduce team._statsGames, 0, (m,gamei,cb) ->
-        game = _games[gamei]
+        game = runEnv.games[gamei]
         i = game.teams.indexOf team.name
         cb null, m + game._statsScores[1 - i]
       , (err,result) ->
@@ -165,17 +173,17 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runPointDiff = ->
+  _runPointDiff = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       team.pointDiff = team.pointsFor - team.pointsAgainst
       cb()
     , -> q.resolve()
     return q.promise
 
-  _runAveragePointDiff = ->
+  _runAveragePointDiff = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       if team._statsGames.length > 0
         team.averagePointDiff = team.pointDiff / team._statsGames.length
       else
@@ -184,13 +192,13 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runAdjustedPointDiff = ->
+  _runAdjustedPointDiff = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       async.waterfall [
         (cb) ->
           async.map team._statsGames, (gamei,cb) ->
-            game = _games[gamei]
+            game = runEnv.games[gamei]
             i = game.teams.indexOf team.name
             pf = game._statsScores[i]
             pa = game._statsScores[1 - i]
@@ -206,9 +214,9 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runAverageAdjustedPointDiff = ->
+  _runAverageAdjustedPointDiff = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       if team._statsGames.length > 0
         team.averageAdjustedPointDiff = team.adjustedPointDiff / team._statsGames.length
       else
@@ -217,14 +225,13 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-
-  _runPWins = ->
+  _runPWins = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       async.waterfall [
         (cb) ->
           async.map team._statsGames, (gamei,cb) ->
-            game = _games[gamei]
+            game = runEnv.games[gamei]
             i = game.teams.indexOf team.name
             cb null, [ game._statsScores[i], game._statsScores[1 - i] ]
           , cb
@@ -238,9 +245,9 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runWinPercent = ->
+  _runWinPercent = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       if team.games != 0
         team.winPercent = team.wins / team.games
       else
@@ -249,23 +256,23 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runStatOR = ->
+  _runStatOR = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       async.waterfall [
         (cb) ->
           async.map team._statsGames, (gamei,cb) ->
-            game = _games[gamei]
+            game = runEnv.games[gamei]
             i = game.teams.indexOf team.name
             cb null, game.teams[1 - i]
           , cb
         (opponents,cb) ->
           async.map opponents, (opponent,cb) ->
-            oppTeam = _teams[_teamCache[opponent]]
+            oppTeam = runEnv.teams[runEnv.teamCache[opponent]]
             async.waterfall [
               (cb) ->
                 async.map oppTeam._statsGames, (gamei,cb) ->
-                  cb null, _games[gamei]
+                  cb null, runEnv.games[gamei]
                 , cb
               (oppGames,cb) ->
                 async.filter oppGames, (game,cb) ->
@@ -290,19 +297,19 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runStatORR = ->
+  _runStatORR = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       async.waterfall [
         (cb) ->
           async.map team._statsGames, (gamei,cb) ->
-            game = _games[gamei]
+            game = runEnv.games[gamei]
             i = game.teams.indexOf team.name
             cb null, game.teams[1 - i]
           , cb
         (opponents,cb) ->
           async.map opponents, (opponent,cb) ->
-            oppTeam = _teams[_teamCache[opponent]]
+            oppTeam = runEnv.teams[runEnv.teamCache[opponent]]
             cb null, oppTeam._statOR
           , cb
         (opponentORs,cb) ->
@@ -315,9 +322,9 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  _runSoS = ->
+  _runSoS = (runEnv) ->
     q = $q.defer()
-    async.each _teams, (team,cb) ->
+    async.each runEnv.teams, (team,cb) ->
       _oppW = if team._statOR[1] != 0
         team._statOR[0] / team._statOR[1]
       else
@@ -331,31 +338,46 @@ qdata.factory "statsEngine", ($q,games,teams) ->
     , -> q.resolve()
     return q.promise
 
-  run: ->
-    _preRun().then ->
+  run: (options = {}) ->
+    runEnv =
+      teams: []
+      games: []
+      teamCache: {}
+    _preRun(runEnv,options).then ->
       $q.all([
         $q.all([
-          _runGames()
-          _runWins()
-        ]).then -> _runWinPercent()
-        _runLoses()
-        _runCatches()
-        _runStatOR().then -> _runStatORR().then -> _runSoS()
+          _runGames(runEnv)
+          _runWins(runEnv)
+        ]).then -> _runWinPercent(runEnv)
+        _runLoses(runEnv)
+        _runCatches(runEnv)
+        _runStatOR(runEnv).then -> _runStatORR(runEnv).then -> _runSoS(runEnv)
         $q.all([
-          _runPointsFor()
-          _runPointsAgainst()
-        ]).then -> _runPointDiff().then -> _runAveragePointDiff()
-        _runAdjustedPointDiff().then -> _runAverageAdjustedPointDiff()
-        _runPWins()
+          _runPointsFor(runEnv)
+          _runPointsAgainst(runEnv)
+        ]).then -> _runPointDiff(runEnv).then -> _runAveragePointDiff(runEnv)
+        _runAdjustedPointDiff(runEnv).then -> _runAverageAdjustedPointDiff(runEnv)
+        _runPWins(runEnv)
       ])
+    return runEnv.teams
 
 qdata.filter "sprintf", ->
   (value,args...) ->
     sprintf value, args...
 
+qdata.filter "statfmt", ->
+  (value,format) ->
+    if value?
+      if format?
+        sprintf format, value
+      else
+        sprintf "%s", value
+    else
+      ""
+
 qdata.filter "formatDate", ->
   (value) ->
-    moment(value, "YYYY-MM-DD").format("MMM Do 'YY")
+    moment(value).format("MMM Do 'YY")
 
 qdata.filter "formatFinalScore", ->
   (value,index) ->
@@ -449,19 +471,45 @@ qdata.directive "qSortable", ->
         $icon.addClass "fa-sort"
     , true
 
-qdata.controller "TeamsController", ($scope,$filter,teams,statsEngine) ->
-  statsEngine.run().then ->
-    teams.all().then (teams) ->
-      $scope.teams = teams
+qdata.directive "qDatepicker", ->
+  restrict: 'E'
+  replace: true
+  scope:
+    model: '=ngModel'
+  template: '''
+    <div class="input-group">
+      <input class="form-control" type="text" datepicker-popup="dd MMMM, yyyy" is-open="isOpen" ng-model="model"></input>
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="doOpen($event)">
+          <i class="fa fa-calendar"></i>
+        </button>
+      </span>
+    </div>
+  '''
+  link: ($scope,$element,attributes) ->
+    $scope.doOpen = ($event) ->
+      $event.preventDefault()
+      $event.stopPropagation()
+      $scope.isOpen = true
 
+
+qdata.controller "TeamsController", ($scope,$filter,teams,statsEngine) ->
   $scope.filter =
     games: 1
     region: "all"
     name: ""
+    startDate: moment("2014-09-01").toDate()
+    endDate: moment().toDate()
 
   $scope.sort =
     field: "wins"
     desc: true
+
+  _runEngine = ->
+    $scope.teams = statsEngine.run
+      startDate: $scope.filter.startDate
+      endDate: $scope.filter.endDate
+  _runEngine()
 
   $scope.filterp = (value) ->
     gameFilter = value.games >= $scope.filter.games
@@ -469,6 +517,14 @@ qdata.controller "TeamsController", ($scope,$filter,teams,statsEngine) ->
     nameFilter = value.name.toLowerCase().indexOf($scope.filter.name.toLowerCase()) >= 0
     
     gameFilter && regionFilter && nameFilter
+
+  $scope.$watch "filter.startDate", (newValue) ->
+    if moment(newValue).isValid()
+      _runEngine()
+
+  $scope.$watch "filter.endDate", (newValue) ->
+    if moment(newValue).isValid()
+      _runEngine()
 
 qdata.controller "GamesController", ($scope,games) ->
   games.all().then (data) ->
