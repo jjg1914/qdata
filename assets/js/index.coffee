@@ -15,6 +15,35 @@ qdata.config ($routeProvider) ->
   $routeProvider.otherwise
     redirectTo: "/teams"
 
+qdata.factory "auth", ($rootScope) ->
+  _me =
+    displayName: ""
+    avatar: ""
+
+  if localStorage["accessToken"] and !_me.auth?
+    _me.auth = OAuth.create "google", access_token: localStorage["accessToken"]
+    if _me.auth
+      _me.auth.me().done (me) ->
+        console.log me
+        $rootScope.$apply ->
+          _me.displayName = me.name
+          _me.avatar = me.avatar
+
+  me: -> _me
+
+  login: ->
+    OAuth.popup("google").done (result) ->
+      localStorage["accessToken"] = result.access_token
+      _me.auth = result
+      result.me().done (me) ->
+        $rootScope.$apply ->
+          _me.displayName = me.name
+          _me.avatar = me.avatar
+
+  logout: ->
+    delete _me.auth
+    delete localStorage["accessToken"]
+
 qdata.factory "teams", ($q,$http) ->
   _data = $q.defer()
   _nameIndex = {}
@@ -543,29 +572,12 @@ qdata.controller "GamesController", ($scope,games) ->
       ( $scope.filter.event == "all" or game.event == $scope.filter.event ) and nameFilter.length > 0
 
 
-qdata.controller "ApplicationController", ($scope,$location) ->
+qdata.controller "ApplicationController", ($scope,$location,auth) ->
   $scope.navPath = ->
     $location.path()
 
-  if localStorage["accessToken"]
-    $scope.auth = OAuth.create "google", access_token: localStorage["accessToken"]
-    if $scope.auth
-      $scope.auth.me().done (me) ->
-        $scope.$apply ->
-          $scope.me =
-            displayName: me.name
-            avatar: me.avatar
+  $scope.me = auth.me()
 
-  $scope.login = ->
-    OAuth.popup("google").done (result) ->
-      localStorage["accessToken"] = result.access_token
-      $scope.auth = result
-      result.me().done (me) ->
-        $scope.$apply ->
-          $scope.me =
-            displayName: me.name
-            avatar: me.avatar
+  $scope.login = -> auth.login()
 
-  $scope.logout = ->
-    delete $scope.me
-    delete localStorage["accessToken"]
+  $scope.logout = -> auth.logout()

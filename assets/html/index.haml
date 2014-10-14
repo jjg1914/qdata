@@ -38,14 +38,14 @@
               %li(ng-class="{ active: navPath() == '/games' }")
                 %a(href="#/games") Box Scores
             %ul.nav.navbar-nav.navbar-right
-              %li(ng-if="!me")
+              %li(ng-if="!me.auth")
                 %a(href="" ng-click="login()")
                   %i.fa.fa-user
                   Login
-              %li(ng-if="!!me")
+              %li(ng-if="!!me.auth")
                 %p.navbar-text
                   {{ me.displayName }}
-              %li(ng-if="!!me")
+              %li(ng-if="!!me.auth")
                 %a(href="" ng-click="logout()")
                   %i.fa.fa-sign-out
                   Logout
