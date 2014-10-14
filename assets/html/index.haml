@@ -50,6 +50,13 @@
                   %i.fa.fa-sign-out
                   Logout
     %main
+      .container-fluid
+        .row
+          .col-xs-12
+            .alert(ng-repeat="alert in alerts" class="alert-{{alert.type}}" role="alert")
+              %strong {{ alert.title }}
+              {{ alert.body }}
+              %button.close(type="button" ng-click="closeAlert($index)") &times;
       %ng-view
     %footer
       %hr

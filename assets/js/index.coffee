@@ -24,7 +24,6 @@ qdata.factory "auth", ($rootScope) ->
     _me.auth = OAuth.create "google", access_token: localStorage["accessToken"]
     if _me.auth
       _me.auth.me().done (me) ->
-        console.log me
         $rootScope.$apply ->
           _me.displayName = me.name
           _me.avatar = me.avatar
@@ -43,6 +42,100 @@ qdata.factory "auth", ($rootScope) ->
   logout: ->
     delete _me.auth
     delete localStorage["accessToken"]
+
+qdata.factory "exporter", ($q,auth) ->
+  google: (teams) ->
+    q = $q.defer()
+    title = "QData Export " + moment().format("on MM/DD/YYYY HH:mm")
+
+    headers = [
+      "Team"
+      "Games"
+      "Wins"
+      "Losses"
+      "Snitch Catches"
+      "Points For"
+      "Points Against"
+      "Point Difference"
+      "Average Point Difference"
+      "Adjusted Point Difference"
+      "Average Adjusted Point Difference"
+      "Win Percentage"
+      "Pythagorean Wins"
+      "Strength of Schedule"
+    ].join(",")
+    data = for team in teams
+      [
+        team.name
+        team.games
+        team.wins
+        team.loses
+        team.catches
+        team.pointsFor
+        team.pointsAgainst
+        team.pointDiff
+        team.averagePointDiff
+        team.adjustedPointDiff
+        team.averageAdjustedPointDiff
+        team.winPercent
+        team.pwins
+        team.sos
+      ].join(",")
+
+    metadata = JSON.stringify
+      title: title
+    csv = headers + "\r\n" + data.join("\r\n")
+
+    boundary = '-------314159265358979323846'
+    body = "\r\n--" + boundary + "\r\n" +
+      "Content-Type: application/json\r\n\r\n" +
+      metadata +
+      "\r\n--" + boundary + "\r\n" +
+      "Content-Type: text/csv\r\n\r\n" +
+      csv + "\r\n--" + boundary + "--"
+
+    auth.me().auth.post("/upload/drive/v2/files?convert=true",
+      contentType: "multipart/mixed; boundary=\"" + boundary + "\""
+      data: body
+    ).done((data) ->
+      q.resolve(title: title)
+    ).fail ->
+      q.reject()
+
+    return q.promise
+
+qdata.factory "alerter", ($timeout) ->
+  _id = 0
+  _alerts = []
+
+  _push = (alert) ->
+    _id += 1
+    alert.id = _id
+    _alerts.unshift alert
+
+    $timeout ->
+      for e,i in _alerts when e.id == alert.id
+        _alerts.splice(i,1)
+    , 10000
+
+    return undefined
+
+  success: (options) ->
+    _push
+      type: "success"
+      body: options.body
+      title: options.title
+
+  error: (options) ->
+    _push
+      type: "danger"
+      body: options.body
+      title: options.title
+
+  clear: (index) ->
+    _alerts.splice(index,1)
+
+  alerts: -> _alerts
 
 qdata.factory "teams", ($q,$http) ->
   _data = $q.defer()
@@ -522,7 +615,7 @@ qdata.directive "qDatepicker", ->
       $scope.isOpen = true
 
 
-qdata.controller "TeamsController", ($scope,$filter,teams,statsEngine) ->
+qdata.controller "TeamsController", ($scope,$filter,teams,statsEngine,exporter,alerter) ->
   $scope.filter =
     games: 1
     region: "all"
@@ -546,6 +639,23 @@ qdata.controller "TeamsController", ($scope,$filter,teams,statsEngine) ->
     nameFilter = value.name.toLowerCase().indexOf($scope.filter.name.toLowerCase()) >= 0
     
     gameFilter && regionFilter && nameFilter
+
+  $scope.exporting = false
+
+  $scope.exportGoogle = ->
+    $scope.exporting = true
+    toExport = $filter("filter")($scope.teams,$scope.filterp)
+    toExport = $filter("orderBy")(toExport,$scope.sort.field,$scope.sort.desc)
+    exporter.google(toExport).then((data) ->
+      alerter.success
+        title: "Export completed!"
+        body: "Successfully exported Google Doc: \"" + data.title + "\""
+    ).catch(->
+      alerter.error
+        title: "Export failed!"
+        body: "Error exporting to Google Doc"
+    ).finally ->
+      $scope.exporting = false
 
   $scope.$watch "filter.startDate", (newValue) ->
     if moment(newValue).isValid()
@@ -572,7 +682,7 @@ qdata.controller "GamesController", ($scope,games) ->
       ( $scope.filter.event == "all" or game.event == $scope.filter.event ) and nameFilter.length > 0
 
 
-qdata.controller "ApplicationController", ($scope,$location,auth) ->
+qdata.controller "ApplicationController", ($scope,$location,auth,alerter) ->
   $scope.navPath = ->
     $location.path()
 
@@ -581,3 +691,8 @@ qdata.controller "ApplicationController", ($scope,$location,auth) ->
   $scope.login = -> auth.login()
 
   $scope.logout = -> auth.logout()
+
+  $scope.alerts = alerter.alerts()
+
+  $scope.closeAlert = (index) ->
+    alerter.clear(index)

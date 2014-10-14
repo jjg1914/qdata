@@ -1,8 +1,6 @@
+@import "compass/css3/animation"
 @import "bootstrap"
 @import "font-awesome"
-
-main
-  padding: 0 1em
 
 footer
   text-align: center
@@ -21,6 +19,18 @@ th
 
 .q-sortable:hover
   background: $state-info-bg
+
+.q-spin
+  @include animation-name(spin)
+  @include animation-duration(2000ms)
+  @include animation-iteration-count(infinite)
+  @include animation-timing-function(linear)
+
+  @include keyframes(spin)
+    from
+      @include rotate(0deg)
+    to 
+      @include rotate(360deg)
 
 @media (min-width: $screen-md-min)
   .box-score-final-col
