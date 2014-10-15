@@ -92,33 +92,33 @@
                 SoS
           %tbody
             %tr(ng-repeat="team in teams | filter: filterp | orderBy: sort.field : sort.desc")
-              %td {{ team.name | statfmt }}
+              %td {{ team.name | qStatFormat }}
               /%td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
-              %td {{ team.games | statfmt }}
-              %td {{ team.wins | statfmt }}
-              %td {{ team.loses | statfmt }}
-              %td {{ team.catches | statfmt }}
-              %td {{ team.pointsFor | statfmt }}
-              %td {{ team.pointsAgainst | statfmt }}
+              %td {{ team.games | qStatFormat }}
+              %td {{ team.wins | qStatFormat }}
+              %td {{ team.loses | qStatFormat }}
+              %td {{ team.catches | qStatFormat }}
+              %td {{ team.pointsFor | qStatFormat }}
+              %td {{ team.pointsAgainst | qStatFormat }}
               %td
                 %span(ng-class="{'text-success': team.pointDiff > 0,
                                  'text-danger': team.pointDiff < 0 }")
-                  {{ team.pointDiff | statfmt }}
+                  {{ team.pointDiff | qStatFormat }}
               %td
                 %span(ng-class="{'text-success': team.averagePointDiff > 0,
                                  'text-danger': team.averagePointDiff < 0 }")
-                  {{ team.averagePointDiff | statfmt: "%.3f" }}
+                  {{ team.averagePointDiff | qStatFormat: "%.3f" }}
               %td 
                 %span(ng-class="{'text-success': team.adjustedPointDiff > 0,
                                  'text-danger': team.adjustedPointDiff < 0 }")
-                  {{ team.adjustedPointDiff | statfmt }}
+                  {{ team.adjustedPointDiff | qStatFormat}}
               %td 
                 %span(ng-class="{'text-success': team.averageAdjustedPointDiff > 0,
                                  'text-danger': team.averageAdjustedPointDiff < 0 }")
-                  {{ team.averageAdjustedPointDiff | statfmt: "%.3f" }}
+                  {{ team.averageAdjustedPointDiff | qStatFormat: "%.3f" }}
               %td
-                {{ team.winPercent | statfmt: "%.3f" }}
+                {{ team.winPercent | qStatFormat: "%.3f" }}
               %td 
-                {{ team.pwins | statfmt: "%.3f" }}
+                {{ team.pwins | qStatFormat: "%.3f" }}
               %td
-                {{ team.sos | statfmt: "%.3f" }}
+                {{ team.sos | qStatFormat: "%.3f" }}
