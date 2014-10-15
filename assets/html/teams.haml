@@ -5,18 +5,7 @@
   .row
     .col-xs-12
       %p
-        .btn-group
-          %a.btn.btn-default.dropdown-toggle(type="button"
-                                             data-toggle="dropdown")
-            %i.fa.fa-download
-            Export
-            %i.fa.fa-spinner.q-spin(ng-show="exporting")
-            %span.caret
-          %ul.dropdown-menu(role="menu")
-            %li(ng-class="{disabled: !me.auth}")
-              %a(href="" ng-click="exportGoogle()")
-                %i.fa.fa-google
-                Google Docs
+        %q-export(q-export-data="teams | filter: filterp | orderBy: sort.field : sort.desc")
   .row
     .col-xs-12
       .panel.panel-default

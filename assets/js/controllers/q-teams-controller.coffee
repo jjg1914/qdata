@@ -11,9 +11,12 @@ qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAle
     desc: true
 
   _runEngine = ->
-    $scope.teams = qStatsEngine.run
+    qStatsEngine.run(
       startDate: $scope.filter.startDate
       endDate: $scope.filter.endDate
+    ).then (data) ->
+      $scope.teams = data
+  $scope.teams = []
   _runEngine()
 
   $scope.filterp = (value) ->
@@ -22,23 +25,6 @@ qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAle
     nameFilter = value.name.toLowerCase().indexOf($scope.filter.name.toLowerCase()) >= 0
     
     gameFilter && regionFilter && nameFilter
-
-  $scope.exporting = false
-
-  $scope.exportGoogle = ->
-    $scope.exporting = true
-    toExport = $filter("filter")($scope.teams,$scope.filterp)
-    toExport = $filter("orderBy")(toExport,$scope.sort.field,$scope.sort.desc)
-    qExporter.google(toExport).then((data) ->
-      qAlerter.success
-        title: "Export completed!"
-        body: "Successfully exported Google Doc: \"" + data.title + "\""
-    ).catch(->
-      qAlerter.error
-        title: "Export failed!"
-        body: "Error exporting to Google Doc"
-    ).finally ->
-      $scope.exporting = false
 
   $scope.$watch "filter.startDate", (newValue) ->
     if moment(newValue).isValid()

@@ -290,6 +290,7 @@ qdata.factory "qStatsEngine", ($q,qGames,qTeams) ->
     return q.promise
 
   run: (options = {}) ->
+    q = $q.defer()
     runEnv =
       teams: []
       games: []
@@ -309,5 +310,5 @@ qdata.factory "qStatsEngine", ($q,qGames,qTeams) ->
         ]).then -> _runPointDiff(runEnv).then -> _runAveragePointDiff(runEnv)
         _runAdjustedPointDiff(runEnv).then -> _runAverageAdjustedPointDiff(runEnv)
         _runPWins(runEnv)
-      ])
-    return runEnv.teams
+      ]).then -> q.resolve(runEnv.teams)
+    return q.promise
