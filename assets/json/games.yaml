@@ -171,8 +171,7 @@
 - date: 2014-09-20
   teams:
     - SUNY Cortland
-    - SUNY Fredonia
-  scores:
+    - SUNY Fredonia scores:
     -
       - 70
     -
@@ -229,6 +228,18 @@
       - 110
     -
       - 60
+  catches: 
+    - 0
+  round: 0
+- date: 2014-10-11
+  teams:
+    - SUNY Cortland
+    - Nazareth College
+  scores:
+    -
+      - 140
+    -
+      - 30
   catches: 
     - 0
   round: 0
