@@ -9,6 +9,7 @@
     "async": "https://github.com/caolan/async.git#v0.2.5",
     "sprintf": "~1.0",
     "oauth-js": "~0.2",
-    "font-awesome": "~4.2"
+    "font-awesome": "~4.2",
+    "angularjs-dropdown-multiselect": "https://github.com/jjg1914/angularjs-dropdown-multiselect.git#icon-themeing"
   }
 }

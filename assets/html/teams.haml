@@ -5,7 +5,16 @@
   .row
     .col-xs-12
       %p
-        %q-export(q-export-data="teams | filter: filterp | orderBy: sort.field : sort.desc")
+        %form.form-inline(role="form")
+          .form-group
+            %label(for="start_date") Start Date
+            %q-datepicker(ng-model="filter.startDate")
+          .form-group
+            %label(for="end_date") End Date
+            %q-datepicker(ng-model="filter.endDate")
+          .form-group
+            %q-export(q-export-data="teams | filter: filterp | orderBy: sort.field : sort.desc")
+            %ng-dropdown-multiselect(options="columns.data" selected-model="columns.model" translation-texts="columns.text" extra-settings="columns.settings" icon-theme="columns.icons")
   .row
     .col-xs-12
       .panel.panel-default
@@ -24,14 +33,6 @@
               %br
               %input.form-control(type="number" name="games"
                                   min="0" step="1" ng-model="filter.games")
-            .form-group
-              %label(for="start_date") Start Date
-              %br
-              %q-datepicker(ng-model="filter.startDate")
-            .form-group
-              %label(for="end_date") End Date
-              %br
-              %q-datepicker(ng-model="filter.endDate")
             -#.form-group
               %label(for="region") Region
               %br
@@ -51,63 +52,70 @@
         %table.table.table-hover
           %thead
             %tr
-              %th.q-action(title="Team Name" q-sortable="{ field: 'name', type: 'alpha' }")
+              %th.q-action(title="Team Name" ng-if="columns.checkModel('name')" q-sortable="{ field: 'name', type: 'alpha' }")
                 Team
-              %th.q-action(title="Games Played" q-sortable="{ field: 'games', type: 'numeric', desc: true }")
+              %th.q-action(title="Games Played" ng-if="columns.checkModel('games')" q-sortable="{ field: 'games', type: 'numeric', desc: true }")
                 G
-              %th.q-action(title="Wins" q-sortable="{ field: 'wins', type: 'numeric', desc: true }")
+              %th.q-action(title="Wins" ng-if="columns.checkModel('wins')" q-sortable="{ field: 'wins', type: 'numeric', desc: true }")
                 W
-              %th.q-action(title="Losses" q-sortable="{ field: 'loses', type: 'numeric', desc: true }")
+              %th.q-action(title="Losses" ng-if="columns.checkModel('loses')" q-sortable="{ field: 'loses', type: 'numeric', desc: true }")
                 L
-              %th.q-action(title="Snitch Catches" q-sortable="{ field: 'catches', type: 'numeric', desc: true }")
+              %th.q-action(title="Snitch Catches" ng-if="columns.checkModel('catches')" q-sortable="{ field: 'catches', type: 'numeric', desc: true }")
                 S
-              %th.q-action(title="Points For" q-sortable="{ field: 'pointsFor', type: 'numeric', desc: true }")
+              %th.q-action(title="Points For" ng-if="columns.checkModel('pointsFor')" q-sortable="{ field: 'pointsFor', type: 'numeric', desc: true }")
                 PF
-              %th.q-action(title="Points Against" q-sortable="{ field: 'pointsAgainst', type: 'numeric', desc: true }")
+              %th.q-action(title="Points Against" ng-if="columns.checkModel('pointsAgainst')" q-sortable="{ field: 'pointsAgainst', type: 'numeric', desc: true }")
                 PA
-              %th.q-action(title="Point Difference" q-sortable="{ field: 'pointDiff', type: 'numeric', desc: true }")
+              %th.q-action(title="Point Difference" ng-if="columns.checkModel('pointDiff')" q-sortable="{ field: 'pointDiff', type: 'numeric', desc: true }")
                 PD
-              %th.q-action(title="Average Point Difference" q-sortable="{ field: 'averagePointDiff', type: 'numeric', desc: true }")
+              %th.q-action(title="Average Point Difference" ng-if="columns.checkModel('averagePointDiff')" q-sortable="{ field: 'averagePointDiff', type: 'numeric', desc: true }")
                 %span.overline PD
-              %th.q-action(title="Adjusted Point Difference" q-sortable="{ field: 'adjustedPointDiff', type: 'numeric', desc: true }")
+              %th.q-action(title="Adjusted Point Difference" ng-if="columns.checkModel('adjustedPointDiff')" q-sortable="{ field: 'adjustedPointDiff', type: 'numeric', desc: true }")
                 PD*
-              %th.q-action(title="Average Adjusted Point Difference" q-sortable="{ field: 'averageAdjustedPointDiff', type: 'numeric', desc: true }")
+              %th.q-action(title="Average Adjusted Point Difference" ng-if="columns.checkModel('averageAdjustedPointDiff')" q-sortable="{ field: 'averageAdjustedPointDiff', type: 'numeric', desc: true }")
                 %span.overline PD*
-              %th.q-action(title="Win Percentage" q-sortable="{ field: 'winPercent', type: 'numeric', desc: true }")
+              %th.q-action(title="Win Percentage" ng-if="columns.checkModel('winPercent')" q-sortable="{ field: 'winPercent', type: 'numeric', desc: true }")
                 W%
-              %th.q-action(title="Pythagorean Wins" q-sortable="{ field: 'pwins', type: 'numeric', desc: true }")
+              %th.q-action(title="Pythagorean Wins" ng-if="columns.checkModel('pwins')" q-sortable="{ field: 'pwins', type: 'numeric', desc: true }")
                 PW
-              %th.q-action(title="Strength of Schedule" q-sortable="{ field: 'sos', type: 'numeric', desc: true }")
+              %th.q-action(title="Strength of Schedule" ng-if="columns.checkModel('sos')" q-sortable="{ field: 'sos', type: 'numeric', desc: true }")
                 SoS
           %tbody
             %tr(ng-repeat="team in teams | filter: filterp | orderBy: sort.field : sort.desc")
-              %td {{ team.name | qStatFormat }}
+              %td(ng-if="columns.checkModel('name')")
+                {{ team.name | qStatFormat }}
               /%td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
-              %td {{ team.games | qStatFormat }}
-              %td {{ team.wins | qStatFormat }}
-              %td {{ team.loses | qStatFormat }}
-              %td {{ team.catches | qStatFormat }}
-              %td {{ team.pointsFor | qStatFormat }}
-              %td {{ team.pointsAgainst | qStatFormat }}
-              %td
+              %td(ng-if="columns.checkModel('games')")
+                {{ team.games | qStatFormat }}
+              %td(ng-if="columns.checkModel('wins')")
+                {{ team.wins | qStatFormat }}
+              %td(ng-if="columns.checkModel('loses')")
+                {{ team.loses | qStatFormat }}
+              %td(ng-if="columns.checkModel('catches')")
+                {{ team.catches | qStatFormat }}
+              %td(ng-if="columns.checkModel('pointsFor')")
+                {{ team.pointsFor | qStatFormat }}
+              %td(ng-if="columns.checkModel('pointsAgainst')")
+                {{ team.pointsAgainst | qStatFormat }}
+              %td(ng-if="columns.checkModel('pointDiff')")
                 %span(ng-class="{'text-success': team.pointDiff > 0,
                                  'text-danger': team.pointDiff < 0 }")
                   {{ team.pointDiff | qStatFormat }}
-              %td
+              %td(ng-if="columns.checkModel('averagePointDiff')")
                 %span(ng-class="{'text-success': team.averagePointDiff > 0,
                                  'text-danger': team.averagePointDiff < 0 }")
                   {{ team.averagePointDiff | qStatFormat: "%.3f" }}
-              %td 
+              %td(ng-if="columns.checkModel('adjustedPointDiff')")
                 %span(ng-class="{'text-success': team.adjustedPointDiff > 0,
                                  'text-danger': team.adjustedPointDiff < 0 }")
                   {{ team.adjustedPointDiff | qStatFormat}}
-              %td 
+              %td(ng-if="columns.checkModel('averageAdjustedPointDiff')")
                 %span(ng-class="{'text-success': team.averageAdjustedPointDiff > 0,
                                  'text-danger': team.averageAdjustedPointDiff < 0 }")
                   {{ team.averageAdjustedPointDiff | qStatFormat: "%.3f" }}
-              %td
+              %td(ng-if="columns.checkModel('winPercent')")
                 {{ team.winPercent | qStatFormat: "%.3f" }}
-              %td 
+              %td(ng-if="columns.checkModel('pwins')")
                 {{ team.pwins | qStatFormat: "%.3f" }}
-              %td
+              %td(ng-if="columns.checkModel('sos')")
                 {{ team.sos | qStatFormat: "%.3f" }}

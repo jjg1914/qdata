@@ -1,4 +1,108 @@
 qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAlerter) ->
+  $scope.columns =
+    text:
+      buttonDefaultText: "Columns"
+    icons:
+      ok: "fa fa-check"
+      remove: "fa fa-remove"
+      button: "fa fa-columns"
+    settings:
+      dynamicTitle: false
+    data: [
+      {
+        id: "name"
+        label: "Team Name"
+      }
+      {
+        id: "games"
+        label: "Games"
+      }
+      {
+        id: "wins"
+        label: "Wins"
+      }
+      {
+        id: "loses"
+        label: "Losses"
+      }
+      {
+        id: "catches"
+        label: "Snitch Catches"
+      }
+      {
+        id: "pointsFor"
+        label: "Points For"
+      }
+      {
+        id: "pointsAgainst"
+        label: "Points Against"
+      }
+      {
+        id: "pointDiff"
+        label: "Point Difference"
+      }
+      {
+        id: "averagePointDiff"
+        label: "Average Point Difference"
+      }
+      {
+        id: "adjustedPointDiff"
+        label: "Adjusted Point Difference"
+      }
+      {
+        id: "averageAdjustedPointDiff"
+        label: "Average Adjusted Point Difference"
+      }
+      {
+        id: "winPercent"
+        label: "Win Percentage"
+      }
+      {
+        id: "pwins"
+        label: "Pythagorean Wins"
+      }
+      {
+        id: "sos"
+        label: "Strength of Schedule"
+      }
+    ]
+    model: [
+      {
+        id: "name"
+        label: "Team Name"
+      }
+      {
+        id: "games"
+        label: "Games"
+      }
+      {
+        id: "wins"
+        label: "Wins"
+      }
+      {
+        id: "loses"
+        label: "Losses"
+      }
+      {
+        id: "catches"
+        label: "Snitch Catches"
+      }
+      {
+        id: "averageAdjustedPointDiff"
+        label: "Average Adjusted Point Difference"
+      }
+      {
+        id: "winPercent"
+        label: "Win Percentage"
+      }
+      {
+        id: "sos"
+        label: "Strength of Schedule"
+      }
+    ]
+    checkModel: (columnId) ->
+      _.any @model, (e) -> e.id == columnId
+
   $scope.filter =
     games: 1
     region: "all"
