@@ -7,7 +7,7 @@ qdata.directive "qExport", (qExporter,qAlerter,qAuth) ->
       <a class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
         <i class="fa fa-download"></i>
         Export
-        <i class="fa fa-spinner q-spin" ng-show="exporting"></i>
+        <i class="fa fa-spinner fa-spin" ng-show="exporting"></i>
         <span class="caret"></span>
       </a>
       <ul class="dropdown-menu" role="menu">

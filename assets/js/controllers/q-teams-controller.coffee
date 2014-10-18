@@ -62,6 +62,14 @@ qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAle
         label: "Pythagorean Wins"
       }
       {
+        id: "swim"
+        label: "Snitch When it Matters"
+      }
+      {
+        id: "swimAdjusted"
+        label: "Adjusted Snitch When it Matters"
+      }
+      {
         id: "sos"
         label: "Strength of Schedule"
       }
@@ -94,6 +102,10 @@ qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAle
       {
         id: "winPercent"
         label: "Win Percentage"
+      }
+      {
+        id: "swim"
+        label: "Snitch When it Matters"
       }
       {
         id: "sos"

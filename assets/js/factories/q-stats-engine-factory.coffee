@@ -289,6 +289,71 @@ qdata.factory "qStatsEngine", ($q,qGames,qTeams) ->
     , -> q.resolve()
     return q.promise
 
+  _runSwim = (runEnv) ->
+    q = $q.defer()
+    async.each runEnv.teams, (team,cb) ->
+      async.waterfall [
+        (cb) ->
+          async.map team._statsGames, (gamei,cb) ->
+            game = runEnv.games[gamei]
+            i = game.teams.indexOf team.name
+            scores = _.map game.scores, (e) -> _.last(e)
+            pd = scores[i] - scores[1 - i]
+
+            c = _.last game.catches
+            if c >= 0
+              scores[c] += 30
+            win_i = if scores[0] > scores[1] then 0 else 1
+
+
+            p_adj = unless pd < 0
+              Math.min(pd, 80) + Math.sqrt(Math.max(pd - 80, 0))
+            else
+              Math.max(pd, -80) - Math.sqrt(Math.max(Math.abs(pd) - 80, 0))
+
+            if c == win_i
+              swim = unless Math.abs(p_adj) < 30
+                Math.exp(-0.033 * (Math.abs(p_adj) - 20))
+              else
+                1
+              cb null, p_adj + (30 * if i == win_i then swim else -swim)
+            else
+              cb null, p_adj
+          , cb
+        (swims,cb) ->
+          async.reduce swims, 0, (m,swim,cb) ->
+            cb null, m + swim
+          , cb
+      ], (err,result) ->
+        if team._statsGames.length > 0
+          team.swim = result / team._statsGames.length
+        else
+          team.swim = 0
+        cb()
+    , ->
+      q.resolve()
+
+    return q.promise
+
+  _runSwimAdjusted = (runEnv) ->
+    q = $q.defer()
+    async.waterfall [
+      (cb) ->
+        async.map runEnv.teams, (team,cb) ->
+          cb null, team.swim
+        , cb
+      (swims,cb) ->
+        async.reduce swims, Number.MAX_VALUE, (m,v,cb) ->
+          cb null, if v < m then v else m
+        , cb
+      (swim_min,cb) ->
+        async.each runEnv.teams, (team,cb) ->
+          team.swimAdjusted = team.swim - swim_min
+          cb()
+        , -> cb null
+    ], -> q.resolve()
+    return q.promise
+
   run: (options = {}) ->
     q = $q.defer()
     runEnv =
@@ -310,5 +375,6 @@ qdata.factory "qStatsEngine", ($q,qGames,qTeams) ->
         ]).then -> _runPointDiff(runEnv).then -> _runAveragePointDiff(runEnv)
         _runAdjustedPointDiff(runEnv).then -> _runAverageAdjustedPointDiff(runEnv)
         _runPWins(runEnv)
+        _runSwim(runEnv).then -> _runSwimAdjusted(runEnv)
       ]).then -> q.resolve(runEnv.teams)
     return q.promise
