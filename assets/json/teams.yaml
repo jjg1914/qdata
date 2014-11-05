@@ -15,7 +15,7 @@
   region: ne
 - name: SUNY Cortland
   region: ne
-- name: Garbage Plates United
+- name: UR a Wizard Harry
   region: ne
 - name: Mansfield University
   region: ne
@@ -24,4 +24,12 @@
 - name: Ithaca Community Quidditch Team
   region: ne
 - name: Nazareth College
+  region: ne
+- name: University of Buffalo Dragons
+  region: ne
+- name: McGill University
+  region: ca
+- name: Mighty Ducks
+  region: ne
+- name: Cornell University
   region: ne

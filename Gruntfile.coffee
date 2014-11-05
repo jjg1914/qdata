@@ -96,11 +96,13 @@ module.exports = (grunt) ->
         files:
           'public/index.min.js': [
             'public/bower_components/jquery/dist/jquery.js'
+            'public/bower_components/lodash/dist/lodash.js'
             'public/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js'
             'public/bower_components/angular/angular.js'
             'public/bower_components/angular-route/angular-route.js'
             'public/bower_components/angular-bootstrap/ui-bootstrap.js'
             'public/bower_components/angular-bootstrap/ui-bootstrap-tpls.js'
+            'public/bower_components/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect.js'
             'public/bower_components/moment/moment.js'
             'public/bower_components/async/lib/async.js'
             'public/bower_components/sprintf/src/sprintf.js'

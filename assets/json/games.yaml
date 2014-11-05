@@ -93,7 +93,7 @@
 - date: 2014-09-20
   teams:
     - Capable Rochester Area Players
-    - Garbage Plates United
+    - UR a Wizard Harry
   scores:
     -
       - 70
@@ -132,7 +132,7 @@
 - date: 2014-09-20
   teams:
     - RPI Remembralls
-    - Garbage Plates United
+    - UR a Wizard Harry
   scores:
     -
       - 110
@@ -144,7 +144,7 @@
   round: 0
 - date: 2014-09-20
   teams:
-    - Garbage Plates United
+    - UR a Wizard Harry
     - Mansfield University
   scores:
     -
@@ -220,10 +220,49 @@
     - 0
   event: Snow Belt Conference Opening Weekend @ RIT
   round: 0
+- date: 2014-09-20
+  teams:
+    - Syracuse University Quidditch Club
+    - Mighty Ducks
+  scores:
+    -
+      - 110
+    -
+      - 20
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - SUNY Cortland
+    - Mighty Ducks
+  scores:
+    -
+      - 120
+    -
+      - 50
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
+- date: 2014-09-20
+  teams:
+    - Mighty Ducks
+    - SUNY Fredonia
+  scores:
+    -
+      - 70
+    -
+      - 50
+  catches: 
+    - 0
+  event: Snow Belt Conference Opening Weekend @ RIT
+  round: 0
 - date: 2014-09-28
   teams:
     - Alfred University
-    - Mansfield University
+    - SUNY Fredonia
   scores:
     -
       - 110
@@ -232,8 +271,92 @@
   catches: 
     - 0
   round: 0
-- date: 2014-10-11
-  teams:
+- date: 2014-10-11 10:00
+  teams: 
+    - Capable Rochester Area Players
+    - University of Buffalo Dragons
+  scores:
+    -
+      - 20
+    -
+      - 140
+  catches:
+    - 1
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1101
+  round: 0
+- date: 2014-10-11 10:00
+  teams: 
+    - Syracuse University Quidditch Club
+    - SUNY Cortland
+  scores:
+    -
+      - 100
+    -
+      - 20
+  catches:
+    - 0
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1107
+  round: 0
+- date: 2014-10-11 10:40
+  teams: 
+    - Nazareth College
+    - Syracuse University Quidditch Club
+  scores:
+    -
+      - 10
+    -
+      - 290
+  catches:
+    - 1
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1607
+  round: 0
+- date: 2014-10-11 10:40
+  teams: 
+    - Capable Rochester Area Players
+    - SUNY Cortland
+  scores:
+    -
+      - 130
+    -
+      - 20
+  catches:
+    - 0
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1167
+  round: 0
+- date: 2014-10-11 11:20
+  teams: 
+    - University of Buffalo Dragons
+    - Nazareth College
+  scores:
+    -
+      - 290
+    -
+      - 20
+  catches:
+    - 0
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1372
+  round: 0
+- date: 2014-10-11 11:20
+  teams: 
+    - Syracuse University Quidditch Club
+    - Capable Rochester Area Players
+  scores:
+    -
+      - 60
+    -
+      - 20
+  catches:
+    - 0
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1095
+  round: 0
+- date: 2014-10-11 12:00
+  teams: 
     - SUNY Cortland
     - Nazareth College
   scores:
@@ -241,6 +364,449 @@
       - 140
     -
       - 30
-  catches: 
+  catches:
     - 0
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1340
   round: 0
+- date: 2014-10-11 12:00
+  teams: 
+    - University of Buffalo Dragons
+    - Syracuse University Quidditch Club
+  scores:
+    -
+      - 10
+    -
+      - 80
+  catches:
+    - -1
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1545
+  round: 0
+- date: 2014-10-11 12:40
+  teams: 
+    - SUNY Cortland
+    - University of Buffalo Dragons
+  scores:
+    -
+      - 0
+    -
+      - 90
+  catches:
+    - -1
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1127
+  round: 0
+- date: 2014-10-11 12:40
+  teams: 
+    - Capable Rochester Area Players
+    - Nazareth College
+  scores:
+    -
+      - 70
+    -
+      - 20
+  catches:
+    - 0
+  event: Snow Belt Conference @ SUNY Cortland
+  length: 1175
+  round: 0
+- date: 2014-10-25 10:00
+  teams: 
+    - Mansfield University
+    - Nazareth College
+  scores:
+    -
+      - 160
+    -
+      - 10
+  catches:
+    - 0
+  event: Snow Belt Conference @ Alfred University
+  round: 0
+- date: 2014-10-25 10:40
+  teams: 
+    - Mansfield University
+    - SUNY Cortland
+  scores:
+    -
+      - 110
+    -
+      - 30
+  catches:
+    - 0
+  event: Snow Belt Conference @ Alfred University
+  round: 0
+- date: 2014-10-25 11:20
+  teams: 
+    - SUNY Cortland
+    - Nazareth College
+  scores:
+    -
+      - 100
+    -
+      - 20
+  catches:
+    - 0
+  event: Snow Belt Conference @ Alfred University
+  round: 0
+- date: 2014-10-25 12:00
+  teams: 
+    - Alfred University
+    - Nazareth College
+  scores:
+    -
+      - 220
+    -
+      - 20
+  catches:
+    - 0
+  event: Snow Belt Conference @ Alfred University
+  round: 0
+- date: 2014-10-25 12:40
+  teams: 
+    - Alfred University
+    - SUNY Cortland
+  scores:
+    -
+      - 160
+    -
+      - 40
+  catches:
+    - 0
+  event: Snow Belt Conference @ Alfred University
+  round: 0
+- date: 2014-10-25 13:20
+  teams: 
+    - Mansfield University
+    - Alfred University
+  scores:
+    -
+      - 60
+    -
+      - 40
+  catches:
+    - 0
+  event: Snow Belt Conference @ Alfred University
+  round: 0
+- date: 2014-11-01 09:00
+  teams: 
+    - RPI Remembralls
+    - SUNY Fredonia
+  scores:
+    -
+      - 180
+    -
+      - 20
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1092
+  round: 0
+- date: 2014-11-01 09:30
+  teams: 
+    - Syracuse University Quidditch Club
+    - Cornell University
+  scores:
+    -
+      - 120
+    -
+      - 20
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1373
+  round: 0
+- date: 2014-11-01 10:00
+  teams: 
+    - Syracuse University Quidditch Club
+    - SUNY Fredonia
+  scores:
+    -
+      - 90
+    -
+      - 0
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1200
+  round: 0
+- date: 2014-11-01 10:30
+  teams: 
+    - RPI Remembralls
+    - Cornell University
+  scores:
+    -
+      - 240
+    -
+      - 0
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1113
+  round: 0
+- date: 2014-11-01 11:00
+  teams: 
+    - SUNY Fredonia
+    - Cornell University
+  scores:
+    -
+      - 0
+    -
+      - 120
+  catches:
+    - 1
+  event: Syracuse Halloween Invitational III
+  forfeit: true
+  round: 0
+- date: 2014-11-01 11:30
+  teams: 
+    - RPI Remembralls
+    - Syracuse University Quidditch Club
+  scores:
+    -
+      - 160
+    -
+      - 20
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1136
+  round: 0
+- date: 2014-11-01 09:00
+  teams: 
+    - Ithaca Community Quidditch Team
+    - SUNY Geneseo
+  scores:
+    -
+      - 30
+    -
+      - 90
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1260
+  round: 0
+- date: 2014-11-01 09:30
+  teams: 
+    - University of Rochester Thestrals
+    - University of Buffalo Dragons
+  scores:
+    -
+      - 140
+    -
+      - 20
+  catches:
+    - 1
+  event: Syracuse Halloween Invitational III
+  length: 1200
+  round: 0
+- date: 2014-11-01 10:00
+  teams: 
+    - Ithaca Community Quidditch Team
+    - University of Rochester Thestrals
+  scores:
+    -
+      - 0
+    -
+      - 130
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1140
+  round: 0
+- date: 2014-11-01 10:30
+  teams: 
+    - SUNY Geneseo
+    - University of Buffalo Dragons
+  scores:
+    -
+      - 90
+    -
+      - 40
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1153
+  round: 0
+- date: 2014-11-01 11:00
+  teams: 
+    - SUNY Geneseo
+    - University of Rochester Thestrals
+  scores:
+    -
+      - 20
+    -
+      - 90
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1295
+  round: 0
+- date: 2014-11-01 11:30
+  teams: 
+    - University of Buffalo Dragons
+    - Ithaca Community Quidditch Team
+  scores:
+    -
+      - 90
+    -
+      - 20
+  catches:
+    - 1
+  event: Syracuse Halloween Invitational III
+  length: 1140
+  round: 0
+- date: 2014-11-01 09:00
+  teams: 
+    - UR a Wizard Harry
+    - SUNY Cortland
+  scores:
+    -
+      - 40
+    -
+      - 10
+  catches:
+    - -1
+  event: Syracuse Halloween Invitational III
+  length: 1200
+  round: 0
+- date: 2014-11-01 09:30
+  teams: 
+    - Mighty Ducks
+    - McGill University
+  scores:
+    -
+      - 0
+    -
+      - 120
+  catches:
+    - 1
+  event: Syracuse Halloween Invitational III
+  forfeit: true
+  round: 0
+- date: 2014-11-01 10:00
+  teams: 
+    - UR a Wizard Harry
+    - McGill University
+  scores:
+    -
+      - 10
+    -
+      - 110
+  catches:
+    - 1
+  event: Syracuse Halloween Invitational III
+  length: 1120
+  round: 0
+- date: 2014-11-01 10:30
+  teams: 
+    - Mighty Ducks
+    - SUNY Cortland
+  scores:
+    -
+      - 50
+    -
+      - 40
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1140
+  round: 0
+- date: 2014-11-01 11:00
+  teams: 
+    - UR a Wizard Harry
+    - Mighty Ducks
+  scores:
+    -
+      - 30
+    -
+      - 50
+  catches:
+    - 1
+  event: Syracuse Halloween Invitational III
+  length: 1140
+  round: 0
+- date: 2014-11-01 11:30
+  teams: 
+    - SUNY Cortland
+    - McGill University
+  scores:
+    -
+      - 30
+    -
+      - 140
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1110
+  round: 0
+- date: 2014-11-01 12:45
+  teams: 
+    - Syracuse University Quidditch Club
+    - SUNY Geneseo
+  scores:
+    -
+      - 40
+    -
+      - 40
+  catches:
+    - 1
+  event: Syracuse Halloween Invitational III
+  length: 1091
+  round: 1
+- date: 2014-11-01 12:45
+  teams: 
+    - University of Rochester Thestrals
+    - Mighty Ducks
+  scores:
+    -
+      - 140
+    -
+      - 0
+  catches:
+    - 1
+  event: Syracuse Halloween Invitational III
+  length: 1142
+  round: 1
+- date: 2014-11-01 13:15
+  teams: 
+    - McGill University
+    - University of Rochester Thestrals
+  scores:
+    -
+      - 60
+    -
+      - 60
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  round: 2
+- date: 2014-11-01 13:15
+  teams: 
+    - SUNY Geneseo
+    - RPI Remembralls
+  scores:
+    -
+      - 0
+    -
+      - 120
+  catches:
+    - 1
+  event: Syracuse Halloween Invitational III
+  forfeit: true
+  round: 2
+- date: 2014-11-01 13:15
+  teams: 
+    - RPI Remembralls
+    - McGill University
+  scores:
+    -
+      - 60
+    -
+      - 80
+  catches:
+    - 0
+  event: Syracuse Halloween Invitational III
+  length: 1146
+  round: 3
