@@ -14,6 +14,7 @@ module.exports = (grunt) ->
           compass: true
           loadPath: [
             "public/bower_components/bootstrap-sass-official/assets/stylesheets/"
+            "public/bower_components/font-awesome/scss/"
           ]
         expand: true
         cwd: 'assets/css'
@@ -54,12 +55,42 @@ module.exports = (grunt) ->
         src: [ '**/*.yaml' ]
         dest: 'public/'
         ext: '.json'
+    copy:
+      fonts:
+        files: [
+          {
+            expand: true
+            cwd: "public/bower_components/font-awesome"
+            src: [ "fonts/**" ]
+            dest: "public/"
+          }
+          {
+            expand: true
+            cwd: "public/bower_components/bootstrap-sass-official/assets"
+            src: [ "fonts/**" ]
+            dest: "public/"
+          }
+        ]
     ngAnnotate:
       options:
         singleQuotes: true
       dist:
-        files:
-          'public/index.annotate.js': [ 'public/index.js' ]
+        files: [
+          {
+            expand: true
+            src: [
+              'index.js'
+              'config.js'
+              'controllers/**/*.js'
+              'directives/**/*.js'
+              'factories/**/*.js'
+              'filters/**/*.js'
+            ]
+            ext: '.annotate.js'
+            cwd: 'public'
+            dest: 'public'
+          }
+        ]
     uglify:
       dist:
         files:
@@ -68,17 +99,23 @@ module.exports = (grunt) ->
             'public/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js'
             'public/bower_components/angular/angular.js'
             'public/bower_components/angular-route/angular-route.js'
-            'public/bower_components/ng-table/ng-table.js'
+            'public/bower_components/angular-bootstrap/ui-bootstrap.js'
+            'public/bower_components/angular-bootstrap/ui-bootstrap-tpls.js'
             'public/bower_components/moment/moment.js'
             'public/bower_components/async/lib/async.js'
             'public/bower_components/sprintf/src/sprintf.js'
+            'public/bower_components/oauth-js/dist/oauth.js'
             'public/index.annotate.js'
+            'public/config.annotate.js'
+            'public/controllers/**/*.annotate.js'
+            'public/directives/**/*.annotate.js'
+            'public/factories/**/*.annotate.js'
+            'public/filters/**/*.annotate.js'
           ]
     cssmin:
       dist:
         files:
           'public/index.min.css': [
-            'public/bower_components/ng-table/ng-table.css'
             'public/index.css'
           ]
     watch:
@@ -125,6 +162,7 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'build', [
+    'copy:fonts'
     'coffee:assets'
     'sass:assets'
     'haml:assets'
@@ -132,6 +170,7 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'dist', [
+    'copy:fonts'
     'coffee:assets'
     'ngAnnotate'
     'uglify:dist'

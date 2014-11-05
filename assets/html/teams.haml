@@ -1,104 +1,131 @@
-.panel.panel-default
-  .panel-heading
-    %h3.panel-title Filters
-  .panel-body
-    %form.form-inline(role="form")
-      .form-group
-        %label(for="name") Name
-        %br
-        %input.form-control(type="text" name="name" ng-model="filter.name")
-      .form-group
-        %label(for="games") Games
-        %br
-        %input.form-control(type="number" name="games"
-                            min="0" step="1" ng-model="filter.games")
-      -#.form-group
-        %label(for="region") Region
-        %br
-        %select.form-control(name="region" ng-model="filter.region")
-          %option(value="all") All
-          %option(value="ma") {{ "ma" | formatRegion }}
-          %option(value="mw") {{ "mw" | formatRegion }}
-          %option(value="ne") {{ "ne" | formatRegion }}
-          %option(value="nw") {{ "nw" | formatRegion }}
-          %option(value="s") {{ "s" | formatRegion }}
-          %option(value="sw") {{ "sw" | formatRegion }}
-          %option(value="w") {{ "w" | formatRegion }}
-.table-responsive
-  %table.table.table-hover(ng-table="tableParams")
-    %thead
-      %tr
-        %th(q-th="'name'") 
-          %div(title="Team Name")
-            Team
-        %th(q-th="'games'")
-          %div(title="Games Played")
-            G
-        %th(q-th="'wins'")
-          %div(title="Wins")
-            W
-        %th(q-th="'loses'")
-          %div(title="Losses")
-            L
-        %th(q-th="'catches'")
-          %div(title="Snitch Catches")
-            S
-        %th(q-th="'pointsFor'") 
-          %div(title="Points For")
-            PF
-        %th(q-th="'pointsAgainst'") 
-          %div(title="Points Against")
-            PA
-        %th(q-th="'pointDiff'")
-          %div(title="Point Difference")
-            PD
-        %th(q-th="'averagePointDiff'")
-          %div(title="Average Point Difference")
-            %span.overline PD
-        %th(q-th="'adjustedPointDiff'")
-          %div(title="Adjusted Point Difference")
-            PD*
-        %th(q-th="'averageAdjustedPointDiff'")
-          %div(title="Average Adjusted Point Difference")
-            %span.overline PD*
-        %th(q-th="'winPercent'")
-          %div(title="Win Percentage")
-            W%
-        %th(q-th="'pwins'")
-          %div(title="Pythagorean Wins")
-            PW
-        %th(q-th="'sos'")
-          %div(title="Strength of Schedule")
-            SoS
-    %tbody
-      %tr(ng-repeat="team in $data")
-        %td {{ team.name }}
-        /%td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
-        %td {{ team.games }}
-        %td {{ team.wins }}
-        %td {{ team.loses }}
-        %td {{ team.catches }}
-        %td {{ team.pointsFor }}
-        %td {{ team.pointsAgainst }}
-        %td
-          %span(ng-class="{'text-success': team.pointDiff > 0,
-                           'text-danger': team.pointDiff < 0 }")
-            {{ team.pointDiff }}
-        %td
-          %span(ng-class="{'text-success': team.averagePointDiff > 0,
-                           'text-danger': team.averagePointDiff < 0 }")
-            {{ "%.3f" | sprintf: team.averagePointDiff }}
-        %td 
-          %span(ng-class="{'text-success': team.adjustedPointDiff > 0,
-                           'text-danger': team.adjustedPointDiff < 0 }")
-            {{ team.adjustedPointDiff }}
-        %td 
-          %span(ng-class="{'text-success': team.averageAdjustedPointDiff > 0,
-                           'text-danger': team.averageAdjustedPointDiff < 0 }")
-            {{ "%.3f" | sprintf: team.averageAdjustedPointDiff }}
-        %td
-          {{ "%.3f" | sprintf: team.winPercent }}
-        %td 
-          {{ "%.3f" | sprintf: team.pwins }}
-        %td
-          {{ "%.3f" | sprintf: team.sos }}
+.container-fluid
+  .row
+    .col-xs-12
+      %h1 Standings
+  .row
+    .col-xs-12
+      %p
+        %form.form-inline(role="form")
+          .form-group
+            %label(for="start_date") Start Date
+            %q-datepicker(ng-model="filter.startDate")
+          .form-group
+            %label(for="end_date") End Date
+            %q-datepicker(ng-model="filter.endDate")
+          .form-group
+            %q-export(q-export-data="teams | filter: filterp | orderBy: sort.field : sort.desc")
+            %ng-dropdown-multiselect(options="columns.data" selected-model="columns.model" translation-texts="columns.text" extra-settings="columns.settings" icon-theme="columns.icons")
+  .row
+    .col-xs-12
+      .panel.panel-default
+        .panel-heading.q-action(ng-click="showFilters = !showFilters")
+          %h3.panel-title
+            %i.fa(ng-class="{'fa-chevron-down': !showFilters, 'fa-chevron-up': showFilters}")
+            Filters
+        .panel-body(ng-if="showFilters")
+          %form.form-inline(role="form")
+            .form-group
+              %label(for="name") Team
+              %br
+              %input.form-control(type="text" name="name" ng-model="filter.name")
+            .form-group
+              %label(for="games") Minimum Games
+              %br
+              %input.form-control(type="number" name="games"
+                                  min="0" step="1" ng-model="filter.games")
+            -#.form-group
+              %label(for="region") Region
+              %br
+              %select.form-control(name="region" ng-model="filter.region")
+                %option(value="all") All
+                %option(value="ma") {{ "ma" | formatRegion }}
+                %option(value="mw") {{ "mw" | formatRegion }}
+                %option(value="ne") {{ "ne" | formatRegion }}
+                %option(value="nw") {{ "nw" | formatRegion }}
+                %option(value="s") {{ "s" | formatRegion }}
+                %option(value="sw") {{ "sw" | formatRegion }}
+                %option(value="w") {{ "w" | formatRegion }}
+
+  .row
+    .col-xs-12
+      .table-responsive
+        %table.table.table-hover
+          %thead
+            %tr
+              %th.q-action(title="Team Name" ng-if="columns.checkModel('name')" q-sortable="{ field: 'name', type: 'alpha' }")
+                Team
+              %th.q-action(title="Games Played" ng-if="columns.checkModel('games')" q-sortable="{ field: 'games', type: 'numeric', desc: true }")
+                G
+              %th.q-action(title="Wins" ng-if="columns.checkModel('wins')" q-sortable="{ field: 'wins', type: 'numeric', desc: true }")
+                W
+              %th.q-action(title="Losses" ng-if="columns.checkModel('loses')" q-sortable="{ field: 'loses', type: 'numeric', desc: true }")
+                L
+              %th.q-action(title="Snitch Catches" ng-if="columns.checkModel('catches')" q-sortable="{ field: 'catches', type: 'numeric', desc: true }")
+                S
+              %th.q-action(title="Points For" ng-if="columns.checkModel('pointsFor')" q-sortable="{ field: 'pointsFor', type: 'numeric', desc: true }")
+                PF
+              %th.q-action(title="Points Against" ng-if="columns.checkModel('pointsAgainst')" q-sortable="{ field: 'pointsAgainst', type: 'numeric', desc: true }")
+                PA
+              %th.q-action(title="Point Difference" ng-if="columns.checkModel('pointDiff')" q-sortable="{ field: 'pointDiff', type: 'numeric', desc: true }")
+                PD
+              %th.q-action(title="Average Point Difference" ng-if="columns.checkModel('averagePointDiff')" q-sortable="{ field: 'averagePointDiff', type: 'numeric', desc: true }")
+                %span.overline PD
+              %th.q-action(title="Adjusted Point Difference" ng-if="columns.checkModel('adjustedPointDiff')" q-sortable="{ field: 'adjustedPointDiff', type: 'numeric', desc: true }")
+                PD*
+              %th.q-action(title="Average Adjusted Point Difference" ng-if="columns.checkModel('averageAdjustedPointDiff')" q-sortable="{ field: 'averageAdjustedPointDiff', type: 'numeric', desc: true }")
+                %span.overline PD*
+              %th.q-action(title="Win Percentage" ng-if="columns.checkModel('winPercent')" q-sortable="{ field: 'winPercent', type: 'numeric', desc: true }")
+                W%
+              %th.q-action(title="Pythagorean Wins" ng-if="columns.checkModel('pwins')" q-sortable="{ field: 'pwins', type: 'numeric', desc: true }")
+                PW
+              %th.q-action(title="Snitch When it Matters" ng-if="columns.checkModel('swim')" q-sortable="{ field: 'swim', type: 'numeric', desc: true }")
+                SWIM
+              %th.q-action(title="Adjusted Snitch When it Matters" ng-if="columns.checkModel('swimAdjusted')" q-sortable="{ field: 'swimAdjusted', type: 'numeric', desc: true }")
+                *SWIM
+              %th.q-action(title="Strength of Schedule" ng-if="columns.checkModel('sos')" q-sortable="{ field: 'sos', type: 'numeric', desc: true }")
+                SoS
+          %tbody
+            %tr(ng-repeat="team in teams | filter: filterp | orderBy: sort.field : sort.desc")
+              %td(ng-if="columns.checkModel('name')")
+                {{ team.name | qStatFormat }}
+              /%td(data-title="'Region'" data-sortable="'region'") {{ team.region | formatRegion }}
+              %td(ng-if="columns.checkModel('games')")
+                {{ team.games | qStatFormat }}
+              %td(ng-if="columns.checkModel('wins')")
+                {{ team.wins | qStatFormat }}
+              %td(ng-if="columns.checkModel('loses')")
+                {{ team.loses | qStatFormat }}
+              %td(ng-if="columns.checkModel('catches')")
+                {{ team.catches | qStatFormat }}
+              %td(ng-if="columns.checkModel('pointsFor')")
+                {{ team.pointsFor | qStatFormat }}
+              %td(ng-if="columns.checkModel('pointsAgainst')")
+                {{ team.pointsAgainst | qStatFormat }}
+              %td(ng-if="columns.checkModel('pointDiff')")
+                %span(ng-class="{'text-success': team.pointDiff > 0,
+                                 'text-danger': team.pointDiff < 0 }")
+                  {{ team.pointDiff | qStatFormat }}
+              %td(ng-if="columns.checkModel('averagePointDiff')")
+                %span(ng-class="{'text-success': team.averagePointDiff > 0,
+                                 'text-danger': team.averagePointDiff < 0 }")
+                  {{ team.averagePointDiff | qStatFormat: "%.3f" }}
+              %td(ng-if="columns.checkModel('adjustedPointDiff')")
+                %span(ng-class="{'text-success': team.adjustedPointDiff > 0,
+                                 'text-danger': team.adjustedPointDiff < 0 }")
+                  {{ team.adjustedPointDiff | qStatFormat}}
+              %td(ng-if="columns.checkModel('averageAdjustedPointDiff')")
+                %span(ng-class="{'text-success': team.averageAdjustedPointDiff > 0,
+                                 'text-danger': team.averageAdjustedPointDiff < 0 }")
+                  {{ team.averageAdjustedPointDiff | qStatFormat: "%.3f" }}
+              %td(ng-if="columns.checkModel('winPercent')")
+                {{ team.winPercent | qStatFormat: "%.3f" }}
+              %td(ng-if="columns.checkModel('pwins')")
+                {{ team.pwins | qStatFormat: "%.3f" }}
+              %td(ng-if="columns.checkModel('swim')")
+                %span(ng-class="{'text-success': team.swim > 0,
+                                 'text-danger': team.swim < 0 }")
+                  {{ team.swim | qStatFormat: "%.3f" }}
+              %td(ng-if="columns.checkModel('swimAdjusted')")
+                  {{ team.swimAdjusted | qStatFormat: "%.3f" }}
+              %td(ng-if="columns.checkModel('sos')")
+                {{ team.sos | qStatFormat: "%.3f" }}

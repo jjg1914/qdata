@@ -3,10 +3,13 @@
   "dependencies": {
     "angular": "~1.2",
     "angular-route": "~1.2",
-    "ng-table": "~0.3",
+    "angular-bootstrap": "~0.11",
     "moment": "~2.8",
     "bootstrap-sass-official": "~3.2",
     "async": "https://github.com/caolan/async.git#v0.2.5",
-    "sprintf": "~1.0"
+    "sprintf": "~1.0",
+    "oauth-js": "~0.2",
+    "font-awesome": "~4.2",
+    "angularjs-dropdown-multiselect": "https://github.com/jjg1914/angularjs-dropdown-multiselect.git#icon-themeing"
   }
 }

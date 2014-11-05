@@ -8,18 +8,39 @@
       %link(href="index.min.css" rel="stylesheet" type="text/css" media="all")
       %script(src="index.min.js" type="text/javascript")
     - else
-      %link(href="bower_components/ng-table/ng-table.css" rel="stylesheet" type="text/css" media="all")
       %link(href="index.css" rel="stylesheet" type="text/css" media="all")
       %script(src="bower_components/jquery/dist/jquery.js" type="text/javascript")
+      %script(src="bower_components/lodash/dist/lodash.js" type="text/javascript")
       %script(src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js" type="text/javascript")
       %script(src="bower_components/angular/angular.js" type="text/javascript")
       %script(src="bower_components/angular-route/angular-route.js" type="text/javascript")
-      %script(src="bower_components/ng-table/ng-table.js" type="text/javascript")
+      %script(src="bower_components/angular-bootstrap/ui-bootstrap.js" type="text/javascript")
+      %script(src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js" type="text/javascript")
+      %script(src="bower_components/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect.js" type="text/javascript")
       %script(src="bower_components/moment/moment.js" type="text/javascript")
       %script(src="bower_components/async/lib/async.js" type="text/javascript")
       %script(src="bower_components/sprintf/src/sprintf.js" type="text/javascript")
+      %script(src="bower_components/oauth-js/dist/oauth.js" type="text/javascript")
       %script(src="index.js" type="text/javascript")
-  %body(ng-app="qdata" ng-controller="ApplicationController")
+      %script(src="config.js" type="text/javascript")
+      %script(src="controllers/q-application-controller.js" type="text/javascript")
+      %script(src="controllers/q-games-controller.js" type="text/javascript")
+      %script(src="controllers/q-teams-controller.js" type="text/javascript")
+      %script(src="directives/q-datepicker-directive.js" type="text/javascript")
+      %script(src="directives/q-export-directive.js" type="text/javascript")
+      %script(src="directives/q-sortable-directive.js" type="text/javascript")
+      %script(src="factories/q-alerter-factory.js" type="text/javascript")
+      %script(src="factories/q-auth-factory.js" type="text/javascript")
+      %script(src="factories/q-exporter-factory.js" type="text/javascript")
+      %script(src="factories/q-games-factory.js" type="text/javascript")
+      %script(src="factories/q-stats-engine-factory.js" type="text/javascript")
+      %script(src="factories/q-teams-factory.js" type="text/javascript")
+      %script(src="filters/q-date-format-filter.js" type="text/javascript")
+      %script(src="filters/q-final-score-format.js" type="text/javascript")
+      %script(src="filters/q-region-format-filter.js" type="text/javascript")
+      %script(src="filters/q-score-format-filter.js" type="text/javascript")
+      %script(src="filters/q-stat-format-filter.js" type="text/javascript")
+  %body(ng-app="qdata" ng-controller="qApplicationController")
     %header
       .navbar.navbar-default(role="navigation")
         .container-fluid
@@ -36,5 +57,33 @@
                 %a(href="#/teams") Standings
               %li(ng-class="{ active: navPath() == '/games' }")
                 %a(href="#/games") Box Scores
+            %ul.nav.navbar-nav.navbar-right
+              %li(ng-if="!me.auth")
+                %a(href="" ng-click="login()")
+                  %i.fa.fa-user
+                  Login
+              %li(ng-if="!!me.auth")
+                %p.navbar-text
+                  {{ me.displayName }}
+              %li(ng-if="!!me.auth")
+                %a(href="" ng-click="logout()")
+                  %i.fa.fa-sign-out
+                  Logout
     %main
+      .container-fluid
+        .row
+          .col-xs-12
+            .alert(ng-repeat="alert in alerts" class="alert-{{alert.type}}" role="alert")
+              %strong {{ alert.title }}
+              {{ alert.body }}
+              %button.close(type="button" ng-click="closeAlert($index)") &times;
       %ng-view
+    %footer
+      %hr
+        %p.text-muted
+          Built and maintained by
+          %a(href="mailto:jjg1914@rit.edu") John J. Glynn IV
+        %p
+          %a(href="https://github.com/qdata/qdata") Github
+          &bullet;
+          %a(href="https://github.com/qdata/qdata/issues") Issues

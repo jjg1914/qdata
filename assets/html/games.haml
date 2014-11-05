@@ -1,53 +1,57 @@
-.msrow
-  .col-md-3
-    .panel.panel-default
-      .panel-heading
-        %h3.panel-title Filters
-      .panel-body
-        %form(role="form")
-          .form-group
-            %label(for="event") Event
-            %select.form-control(name="event" ng-model="filter.event")
-              %option(value="all") All
-              %option(ng-repeat="e in events" value="{{ e }}") {{ e }}
-          .form-group
-            %label(for="team") Team
-            %input.form-control(type="text" name="name" ng-model="filter.team")
-  .col-md-9
-    %ul.list-group
-      %li.list-group-item(ng-repeat="game in games | filter: gameFilter | orderBy: ['date', 'round']:true")
-        .container-fluid
-          .row
-            .col-md-12.box-score-col.text-muted
-              {{ game.date | formatDate }}
-          .row
-            .col-md-5.box-score-col
-              %em.text-muted {{ game.event }}
-              %br
-              {{ game.teams[0] }}
-              %br
-              {{ game.teams[1] }}
-            .col-md-1.box-score-col.box-score-final-col
-              %span.text-muted Final
-              %br
-              {{ game | formatFinalScore:0 }}
-              %br
-              {{ game | formatFinalScore:1 }}
-            .col-md-2.box-score-col
-              %span.text-muted Regulation
-              %br
-              {{ game | formatScore:0:0 }}
-              %br
-              {{ game | formatScore:1:0 }}
-            .col-md-2.box-score-col(ng-if="game.catches.length > 1")
-              %span.text-muted Overtime
-              %br
-              {{ game | formatScore:0:1 }}
-              %br
-              {{ game | formatScore:1:1 }}
-            .col-md-2.box-score-col(ng-if="game.catches.length > 2")
-              %span.text-muted Sudden Death
-              %br
-              {{ game | formatScore:0:2 }}
-              %br
-              {{ game | formatScore:1:2 }}
+.container-fluid
+  .row
+    .col-xs-12
+      %h1 Box Scores
+  .row
+    .col-md-3
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title Filters
+        .panel-body
+          %form(role="form")
+            .form-group
+              %label(for="event") Event
+              %select.form-control(name="event" ng-model="filter.event")
+                %option(value="all") All
+                %option(ng-repeat="e in events" value="{{ e }}") {{ e }}
+            .form-group
+              %label(for="team") Team
+              %input.form-control(type="text" name="name" ng-model="filter.team")
+    .col-md-9
+      %ul.list-group
+        %li.list-group-item(ng-repeat="game in games | filter: gameFilter | orderBy: ['date', 'round']:true")
+          .container-fluid
+            .row
+              .col-md-12.box-score-col.text-muted
+                {{ game.date | qDateFormat }}
+            .row
+              .col-md-5.box-score-col
+                %em.text-muted {{ game.event }}
+                %br
+                {{ game.teams[0] }}
+                %br
+                {{ game.teams[1] }}
+              .col-md-1.box-score-col.box-score-final-col
+                %span.text-muted Final
+                %br
+                {{ game | qFinalScoreFormat:0 }}
+                %br
+                {{ game | qFinalScoreFormat:1 }}
+              .col-md-2.box-score-col
+                %span.text-muted Regulation
+                %br
+                {{ game | qScoreFormat:0:0 }}
+                %br
+                {{ game | qScoreFormat:1:0 }}
+              .col-md-2.box-score-col(ng-if="game.catches.length > 1")
+                %span.text-muted Overtime
+                %br
+                {{ game | qScoreFormat:0:1 }}
+                %br
+                {{ game | qScoreFormat:1:1 }}
+              .col-md-2.box-score-col(ng-if="game.catches.length > 2")
+                %span.text-muted Sudden Death
+                %br
+                {{ game | qScoreFormat:0:2 }}
+                %br
+                {{ game | qScoreFormat:1:2 }}
