@@ -22,8 +22,10 @@
         %li.list-group-item(ng-repeat="game in games | filter: gameFilter | orderBy: ['date', 'round']:true")
           .container-fluid
             .row
-              .col-md-12.box-score-col.text-muted
+              .col-md-2.box-score-col.text-muted
                 {{ game.date | qDateFormat }}
+              .col-md-1.box-score-col
+                %strong.text-danger(ng-if="game.forfeit") FORFEIT
             .row
               .col-md-5.box-score-col
                 %em.text-muted {{ game.event }}
@@ -55,3 +57,6 @@
                 {{ game | qScoreFormat:0:2 }}
                 %br
                 {{ game | qScoreFormat:1:2 }}
+            .row
+              .col-md-12.box-score-col
+                .text-muted(ng-if="game.length") {{ game.length | qTimeFormat }}
