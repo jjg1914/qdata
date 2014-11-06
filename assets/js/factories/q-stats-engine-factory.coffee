@@ -354,6 +354,87 @@ qdata.factory "qStatsEngine", ($q,qGames,qTeams) ->
     ], -> q.resolve()
     return q.promise
 
+  _runAdjustedWinPercent = (runEnv) ->
+    q = $q.defer()
+    async.each runEnv.teams, (team,cb) ->
+      team.adjustedWinPercent = ( team.winPercent + 1 ) / 2
+      cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runPerformance = (runEnv) ->
+    q = $q.defer()
+    async.each runEnv.teams, (team,cb) ->
+      team.performance = team.swimAdjusted * team.sos * team.adjustedWinPercent
+      cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runGamePenalty = (runEnv) ->
+    q = $q.defer()
+    async.each runEnv.teams, (team,cb) ->
+      team.gamePenalty = if team._statsGames.length < 5
+        Math.sqrt(team._statsGames.length) / 2.25
+      else
+        1
+      cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runOppPenalty = (runEnv) ->
+    q = $q.defer()
+    async.each runEnv.teams, (team,cb) ->
+      async.reduce team._statsGames, {}, (m,gamei,cb) ->
+        game = runEnv.games[gamei]
+        i = game.teams.indexOf team.name
+        m[game.teams[1 - i]] = true
+        cb(null, m)
+      , (err,result) ->
+        switch _.keys(result).length
+          when 0
+            team.oppPenalty = 0
+          when 1
+            team.oppPenalty = 1 / 3
+          when 2
+            team.oppPenalty = 2 / 3
+          else
+            team.oppPenalty = 1
+        cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runEventPenalty = (runEnv) ->
+    q = $q.defer()
+    async.each runEnv.teams, (team,cb) ->
+      async.reduce team._statsGames, {}, (m,gamei,cb) ->
+        game = runEnv.games[gamei]
+        if game.event
+          m[game.event] = true
+        else
+          m[moment(game.date).format("YYYYMMDD")] = true
+        cb(null, m)
+      , (err,result) ->
+        if _.keys(result).length < 2
+          team.eventPenalty = 0.5
+        else
+          team.eventPenalty = 1
+        cb()
+    , -> q.resolve()
+    return q.promise
+
+  _runIQARating = (runEnv) ->
+    q = $q.defer()
+    async.each runEnv.teams, (team,cb) ->
+      console.log team.name
+      console.log team.performance
+      console.log team.gamePenalty
+      console.log team.oppPenalty
+      console.log team.eventPenalty
+      team.iqaRating = team.performance * team.gamePenalty * team.oppPenalty * team.eventPenalty
+      cb()
+    , -> q.resolve()
+    return q.promise
+
   run: (options = {}) ->
     q = $q.defer()
     runEnv =
@@ -363,18 +444,28 @@ qdata.factory "qStatsEngine", ($q,qGames,qTeams) ->
     _preRun(runEnv,options).then ->
       $q.all([
         $q.all([
-          _runGames(runEnv)
-          _runWins(runEnv)
-        ]).then -> _runWinPercent(runEnv)
+          $q.all([
+            $q.all([
+              _runGames(runEnv)
+              _runWins(runEnv)
+            ]).then( ->
+              _runWinPercent(runEnv)
+            ).then ->
+              _runAdjustedWinPercent(runEnv)
+            _runSwim(runEnv).then -> _runSwimAdjusted(runEnv)
+            _runStatOR(runEnv).then -> _runStatORR(runEnv).then -> _runSoS(runEnv)
+          ]).then -> _runPerformance(runEnv)
+          _runGamePenalty(runEnv)
+          _runOppPenalty(runEnv)
+          _runEventPenalty(runEnv)
+        ]).then -> _runIQARating(runEnv)
         _runLoses(runEnv)
         _runCatches(runEnv)
-        _runStatOR(runEnv).then -> _runStatORR(runEnv).then -> _runSoS(runEnv)
         $q.all([
           _runPointsFor(runEnv)
           _runPointsAgainst(runEnv)
         ]).then -> _runPointDiff(runEnv).then -> _runAveragePointDiff(runEnv)
         _runAdjustedPointDiff(runEnv).then -> _runAverageAdjustedPointDiff(runEnv)
         _runPWins(runEnv)
-        _runSwim(runEnv).then -> _runSwimAdjusted(runEnv)
       ]).then -> q.resolve(runEnv.teams)
     return q.promise

@@ -73,6 +73,14 @@ qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAle
         id: "sos"
         label: "Strength of Schedule"
       }
+      {
+        id: "performance"
+        label: "IQA Performance"
+      }
+      {
+        id: "iqaRating"
+        label: "IQA Rating"
+      }
     ]
     model: [
       {
@@ -111,6 +119,10 @@ qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAle
         id: "sos"
         label: "Strength of Schedule"
       }
+      {
+        id: "iqaRating"
+        label: "IQA Rating"
+      }
     ]
     checkModel: (columnId) ->
       _.any @model, (e) -> e.id == columnId
@@ -123,7 +135,7 @@ qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAle
     endDate: moment().toDate()
 
   $scope.sort =
-    field: "wins"
+    field: "iqaRating"
     desc: true
 
   _runEngine = ->

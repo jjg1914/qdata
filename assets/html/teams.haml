@@ -84,6 +84,10 @@
                 *SWIM
               %th.q-action(title="Strength of Schedule" ng-if="columns.checkModel('sos')" q-sortable="{ field: 'sos', type: 'numeric', desc: true }")
                 SoS
+              %th.q-action(title="IQA Performance" ng-if="columns.checkModel('performance')" q-sortable="{ field: 'performance', type: 'numeric', desc: true }")
+                P
+              %th.q-action(title="IQA Rating" ng-if="columns.checkModel('iqaRating')" q-sortable="{ field: 'iqaRating', type: 'numeric', desc: true }")
+                IQA
           %tbody
             %tr(ng-repeat="team in teams | filter: filterp | orderBy: sort.field : sort.desc")
               %td(ng-if="columns.checkModel('name')")
@@ -129,3 +133,7 @@
                   {{ team.swimAdjusted | qStatFormat: "%.3f" }}
               %td(ng-if="columns.checkModel('sos')")
                 {{ team.sos | qStatFormat: "%.3f" }}
+              %td(ng-if="columns.checkModel('performance')")
+                {{ team.performance | qStatFormat: "%.3f" }}
+              %td(ng-if="columns.checkModel('iqaRating')")
+                {{ team.iqaRating | qStatFormat: "%.3f" }}
