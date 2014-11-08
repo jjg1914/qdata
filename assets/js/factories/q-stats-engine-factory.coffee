@@ -7,6 +7,7 @@ qdata.factory "qStatsEngine", ($q,qGames,qTeams) ->
           team = angular.copy team
           runEnv.teamCache[team.name] = runEnv.teams.length
           team._statsGames = []
+          team.elo = 1450
           runEnv.teams.push team
           cb()
         , cb
@@ -425,14 +426,33 @@ qdata.factory "qStatsEngine", ($q,qGames,qTeams) ->
   _runIQARating = (runEnv) ->
     q = $q.defer()
     async.each runEnv.teams, (team,cb) ->
-      console.log team.name
-      console.log team.performance
-      console.log team.gamePenalty
-      console.log team.oppPenalty
-      console.log team.eventPenalty
       team.iqaRating = team.performance * team.gamePenalty * team.oppPenalty * team.eventPenalty
       cb()
     , -> q.resolve()
+    return q.promise
+
+  _runElo = (runEnv) ->
+    q = $q.defer()
+    async.waterfall [
+      (cb) ->
+        async.sortBy runEnv.games, (game,cb) ->
+          cb(null, game.date)
+        , cb
+      (games,cb) ->
+        async.each games, (game,cb) ->
+          team0 = runEnv.teams[game._statsTeams[0]]
+          team1 = runEnv.teams[game._statsTeams[1]]
+          e_a = 1 / ( 1 + Math.pow(10, (team1.elo - team0.elo) / 400))
+          e_b = 1 / ( 1 + Math.pow(10, (team0.elo - team1.elo) / 400))
+          if game._statsFinalScores[0] > game._statsFinalScores[1]
+            team0.elo += 32 * ( 1 - e_a )
+            team1.elo += 32 * ( 0 - e_a )
+          else
+            team0.elo += 32 * ( 0 - e_a )
+            team1.elo += 32 * ( 1 - e_a )
+          cb()
+        , cb
+    ], -> q.resolve()
     return q.promise
 
   run: (options = {}) ->
@@ -467,5 +487,6 @@ qdata.factory "qStatsEngine", ($q,qGames,qTeams) ->
         ]).then -> _runPointDiff(runEnv).then -> _runAveragePointDiff(runEnv)
         _runAdjustedPointDiff(runEnv).then -> _runAverageAdjustedPointDiff(runEnv)
         _runPWins(runEnv)
+        _runElo(runEnv)
       ]).then -> q.resolve(runEnv.teams)
     return q.promise

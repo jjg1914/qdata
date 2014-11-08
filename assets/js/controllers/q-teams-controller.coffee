@@ -12,120 +12,111 @@ qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAle
       {
         id: "name"
         label: "Team Name"
+        enabled: true
+        group: "Standard"
       }
       {
         id: "games"
         label: "Games"
+        enabled: true
+        group: "Standard"
       }
       {
         id: "wins"
         label: "Wins"
+        enabled: true
+        group: "Standard"
       }
       {
         id: "loses"
         label: "Losses"
+        enabled: true
+        group: "Standard"
       }
       {
         id: "catches"
         label: "Snitch Catches"
+        enabled: true
+        group: "Standard"
       }
       {
         id: "pointsFor"
         label: "Points For"
+        group: "Score"
       }
       {
         id: "pointsAgainst"
         label: "Points Against"
+        group: "Score"
       }
       {
         id: "pointDiff"
         label: "Point Difference"
+        group: "Score"
       }
       {
         id: "averagePointDiff"
         label: "Average Point Difference"
+        group: "Score"
       }
       {
         id: "adjustedPointDiff"
         label: "Adjusted Point Difference"
+        group: "Score"
       }
       {
         id: "averageAdjustedPointDiff"
         label: "Average Adjusted Point Difference"
+        enabled: true
+        group: "Score"
       }
       {
         id: "winPercent"
         label: "Win Percentage"
+        enabled: true
+        group: "Standard"
       }
       {
         id: "pwins"
         label: "Pythagorean Wins"
+        group: "Rating"
       }
       {
         id: "swim"
         label: "Snitch When it Matters"
+        enabled: true
+        group: "Rating"
       }
       {
         id: "swimAdjusted"
         label: "Adjusted Snitch When it Matters"
+        group: "Rating"
       }
       {
         id: "sos"
         label: "Strength of Schedule"
+        enabled: true
+        group: "Rating"
       }
       {
         id: "performance"
-        label: "IQA Performance"
+        label: "IQA Rating"
       }
       {
         id: "iqaRating"
-        label: "IQA Rating"
-      }
-    ]
-    model: [
-      {
-        id: "name"
-        label: "Team Name"
+        label: "IQA Modifed Rating"
+        enabled: true
       }
       {
-        id: "games"
-        label: "Games"
-      }
-      {
-        id: "wins"
-        label: "Wins"
-      }
-      {
-        id: "loses"
-        label: "Losses"
-      }
-      {
-        id: "catches"
-        label: "Snitch Catches"
-      }
-      {
-        id: "averageAdjustedPointDiff"
-        label: "Average Adjusted Point Difference"
-      }
-      {
-        id: "winPercent"
-        label: "Win Percentage"
-      }
-      {
-        id: "swim"
-        label: "Snitch When it Matters"
-      }
-      {
-        id: "sos"
-        label: "Strength of Schedule"
-      }
-      {
-        id: "iqaRating"
-        label: "IQA Rating"
+        id: "elo"
+        label: "ELO Rating"
+        enabled: true
       }
     ]
     checkModel: (columnId) ->
       _.any @model, (e) -> e.id == columnId
+
+  $scope.columns.model = _.filter $scope.columns.data, (e) -> e.enabled
 
   $scope.filter =
     games: 1
