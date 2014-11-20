@@ -4,7 +4,7 @@ qdata.directive "qExport", (qExporter,qAlerter,qAuth) ->
   scope: true
   template: '''
     <div class="btn-group">
-      <a class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+      <a class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
         <i class="fa fa-download"></i>
         Export
         <i class="fa fa-spinner fa-spin" ng-show="exporting"></i>

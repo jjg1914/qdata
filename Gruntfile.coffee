@@ -1,7 +1,11 @@
+serveStatic = require "serve-static"
+
 module.exports = (grunt) ->
   grunt.initConfig
     coffee:
       assets:
+        options:
+          sourceMap: true
         expand: true
         cwd: 'assets/js'
         src: [ '**/*.coffee' ]
@@ -13,8 +17,7 @@ module.exports = (grunt) ->
           bundleExec: true
           compass: true
           loadPath: [
-            "public/bower_components/bootstrap-sass-official/assets/stylesheets/"
-            "public/bower_components/font-awesome/scss/"
+            "public/bower_components/"
           ]
         expand: true
         cwd: 'assets/css'
@@ -121,6 +124,11 @@ module.exports = (grunt) ->
             'public/index.css'
           ]
     watch:
+      options:
+        livereload: true
+      gruntfile:
+        files: 'Gruntfile.coffee'
+        tasks: 'build'
       coffee:
         files: 'assets/js/**/*.coffee'
         tasks: 'coffee:assets'
@@ -135,14 +143,16 @@ module.exports = (grunt) ->
         tasks: 'yaml:assets'
     clean:
       assets: [ "public/*", "!public/bower_components" ]
-    'http-server':
+    connect:
       assets:
-        root: "public/"
-        port: 8080
-        runInBackground: true
-      dist:
-        root: "public/"
-        port: 8080
+        options:
+          port: 8080
+          base: "public/"
+          livereload: true
+          middleware: [
+            [ "/assets", serveStatic "assets" ]
+            [ "/", serveStatic "public" ]
+          ]
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-sass'
@@ -155,11 +165,11 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-yaml'
-  grunt.loadNpmTasks 'grunt-http-server'
+  grunt.loadNpmTasks 'grunt-contrib-connect'
 
   grunt.registerTask 'default', [
     'build'
-    'http-server:assets'
+    'connect:assets'
     'watch'
   ]
 

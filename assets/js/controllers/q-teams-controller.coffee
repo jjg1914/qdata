@@ -8,109 +8,120 @@ qdata.controller "qTeamsController", ($scope,$filter,qStatsEngine,qExporter,qAle
       button: "fa fa-columns"
     settings:
       dynamicTitle: false
+      groupByTextProvider: (group) ->
+        switch group
+          when 0
+            "Standard"
+          when 1
+            "Score"
+          when 2
+            "Rating"
     data: [
       {
         id: "name"
         label: "Team Name"
         enabled: true
-        group: "Standard"
+        group: 0
       }
       {
         id: "games"
         label: "Games"
         enabled: true
-        group: "Standard"
+        group: 0
       }
       {
         id: "wins"
         label: "Wins"
         enabled: true
-        group: "Standard"
+        group: 0
       }
       {
         id: "loses"
         label: "Losses"
         enabled: true
-        group: "Standard"
+        group: 0
       }
       {
         id: "catches"
         label: "Snitch Catches"
         enabled: true
-        group: "Standard"
+        group: 0
       }
       {
         id: "pointsFor"
         label: "Points For"
-        group: "Score"
+        group: 1
       }
       {
         id: "pointsAgainst"
         label: "Points Against"
-        group: "Score"
+        group: 1
       }
       {
         id: "pointDiff"
         label: "Point Difference"
-        group: "Score"
+        group: 1
       }
       {
         id: "averagePointDiff"
         label: "Average Point Difference"
-        group: "Score"
+        group: 1
       }
       {
         id: "adjustedPointDiff"
         label: "Adjusted Point Difference"
-        group: "Score"
+        group: 1
       }
       {
         id: "averageAdjustedPointDiff"
         label: "Average Adjusted Point Difference"
         enabled: true
-        group: "Score"
+        group: 1
       }
       {
         id: "winPercent"
         label: "Win Percentage"
         enabled: true
-        group: "Standard"
+        group: 0
       }
       {
         id: "pwins"
         label: "Pythagorean Wins"
-        group: "Rating"
+        group: 2
       }
       {
         id: "swim"
         label: "Snitch When it Matters"
         enabled: true
-        group: "Rating"
+        group: 2
       }
       {
         id: "swimAdjusted"
         label: "Adjusted Snitch When it Matters"
-        group: "Rating"
+        group: 2
       }
       {
         id: "sos"
         label: "Strength of Schedule"
         enabled: true
-        group: "Rating"
+        group: 2
       }
       {
         id: "performance"
         label: "IQA Rating"
+        group: 2
       }
       {
         id: "iqaRating"
         label: "IQA Modifed Rating"
         enabled: true
+        group: 2
       }
       {
         id: "elo"
         label: "ELO Rating"
         enabled: true
+        group: 2
       }
     ]
     checkModel: (columnId) ->

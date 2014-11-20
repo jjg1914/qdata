@@ -1,9 +1,6 @@
 .container-fluid
   .row
     .col-xs-12
-      %h1 Standings
-  .row
-    .col-xs-12
       %p
         %form.form-inline(role="form")
           .form-group
@@ -13,8 +10,8 @@
             %label(for="end_date") End Date
             %q-datepicker(ng-model="filter.endDate")
           .form-group
-            %q-export(q-export-data="teams | filter: filterp | orderBy: sort.field : sort.desc")
             %ng-dropdown-multiselect(options="columns.data" selected-model="columns.model" translation-texts="columns.text" extra-settings="columns.settings" icon-theme="columns.icons" group-by="group")
+            %q-export(q-export-data="teams | filter: filterp | orderBy: sort.field : sort.desc")
   .row
     .col-xs-12
       .panel.panel-default
@@ -49,7 +46,7 @@
   .row
     .col-xs-12
       .table-responsive
-        %table.table.table-hover
+        %table.table.table-condensed.table-hover
           %thead
             %tr
               %th #
