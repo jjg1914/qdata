@@ -153,6 +153,14 @@ module.exports = (grunt) ->
             [ "/assets", serveStatic "assets" ]
             [ "/", serveStatic "public" ]
           ]
+      dist:
+        options:
+          port: 8080
+          base: "public/"
+          keepalive: true
+          middleware: [
+            [ "/", serveStatic "public" ]
+          ]
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-sass'
