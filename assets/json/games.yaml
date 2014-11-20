@@ -810,3 +810,72 @@
   event: Syracuse Halloween Invitational III
   length: 1146
   round: 3
+- date: 2014-11-15 08:00
+  teams:
+    - University of Buffalo Dragons
+    - SUNY Geneseo
+  scores:
+    -
+      - 30
+    -
+      - 120
+  catches:
+    - 0
+  event: "Northeast Regional Championship 2014"
+  length: 1357
+  round: 0
+- date: 2014-11-15 08:00
+  teams:
+    - RIT Dark Marks
+    - University of Rochester Thestrals
+  scores:
+    -
+      - 70
+    -
+      - 140
+  catches:
+    - 1
+  event: "Northeast Regional Championship 2014"
+  length: 1802
+  round: 0
+- date: 2014-11-15 08:40
+  teams:
+    - RPI Remembralls
+    - Syracuse University Quidditch Club
+  scores:
+    -
+      - 140
+    -
+      - 40
+  catches:
+    - 0
+  event: "Northeast Regional Championship 2014"
+  length: 1313
+  round: 0
+- date: 2014-11-15 12:20
+  teams:
+    - RIT Dark Marks
+    - Cornell University
+  scores:
+    -
+      - 120
+    -
+      - 0
+  catches:
+    - 0
+  event: "Northeast Regional Championship 2014"
+  forfeit: true
+  round: 0
+- date: 2014-11-16 12:00
+  teams:
+    - RIT Dark Marks
+    - Syracuse University Quidditch Club
+  scores:
+    -
+      - 210
+    -
+      - 10
+  catches:
+    - 1
+  event: "Northeast Regional Championship 2014"
+  round: 0
