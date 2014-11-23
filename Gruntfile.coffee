@@ -1,6 +1,34 @@
-serveStatic = require "serve-static"
+mainBowerFiles =  require "main-bower-files"
+serveStatic =     require "serve-static"
+
+_srcSort = (a,b) ->
+  [ aSplit, bSplit ] = [ a.split("/"), b.split("/") ]
+  if aSplit.length < bSplit.length
+    -1
+  else if bSplit.length < aSplit.length
+    1
+  else
+    aLast = aSplit[aSplit.length - 1]
+    bLast = bSplit[bSplit.length - 1]
+    if aLast == "index.js" and bLast != "index.js"
+      -1
+    else if aLast != "index.js" and bLast == "index.js"
+      1
+    else
+      a.localeCompare(b)
 
 module.exports = (grunt) ->
+  deps = for dep in mainBowerFiles() when /\.js$/.test(dep)
+    dep.substr((__dirname + "/" ).length)
+  srcJS = for src in grunt.file.expand { cwd: "assets/js" }, "**/*.coffee"
+    src.replace /\.coffee$/, '.js'
+  srcJS.sort _srcSort
+  srcJSAn = for src in srcJS
+    src.replace /\.js$/, '.annotate.js'
+  srcCSS = for src in grunt.file.expand { cwd: "assets/css" }, "**/*.sass"
+    src.replace /\.sass$/, '.css'
+  srcCSS.sort _srcSort
+
   grunt.initConfig
     coffee:
       assets:
@@ -28,6 +56,9 @@ module.exports = (grunt) ->
       assets:
         options:
           language: 'coffee'
+          context:
+            jsFiles: (dep.replace(/^public\//,"") for dep in deps).concat(srcJS)
+            cssFiles: srcCSS
         expand: true
         cwd: 'assets/html'
         src: [ '**/*.haml' ]
@@ -37,7 +68,8 @@ module.exports = (grunt) ->
         options:
           language: 'coffee'
           context:
-            isDist: true
+            jsFiles: [ "index.min.js" ]
+            cssFiles: [ "index.min.css" ]
         expand: true
         cwd: 'assets/html'
         src: [ '**/*.haml' ]
@@ -81,14 +113,7 @@ module.exports = (grunt) ->
         files: [
           {
             expand: true
-            src: [
-              'index.js'
-              'config.js'
-              'controllers/**/*.js'
-              'directives/**/*.js'
-              'factories/**/*.js'
-              'filters/**/*.js'
-            ]
+            src: srcJS
             ext: '.annotate.js'
             cwd: 'public'
             dest: 'public'
@@ -97,32 +122,11 @@ module.exports = (grunt) ->
     uglify:
       dist:
         files:
-          'public/index.min.js': [
-            'public/bower_components/jquery/dist/jquery.js'
-            'public/bower_components/lodash/dist/lodash.js'
-            'public/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js'
-            'public/bower_components/angular/angular.js'
-            'public/bower_components/angular-route/angular-route.js'
-            'public/bower_components/angular-bootstrap/ui-bootstrap.js'
-            'public/bower_components/angular-bootstrap/ui-bootstrap-tpls.js'
-            'public/bower_components/angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect.js'
-            'public/bower_components/moment/moment.js'
-            'public/bower_components/async/lib/async.js'
-            'public/bower_components/sprintf/src/sprintf.js'
-            'public/bower_components/oauth-js/dist/oauth.js'
-            'public/index.annotate.js'
-            'public/config.annotate.js'
-            'public/controllers/**/*.annotate.js'
-            'public/directives/**/*.annotate.js'
-            'public/factories/**/*.annotate.js'
-            'public/filters/**/*.annotate.js'
-          ]
+          'public/index.min.js': deps.concat("public/" + e for e in srcJSAn)
     cssmin:
       dist:
         files:
-          'public/index.min.css': [
-            'public/index.css'
-          ]
+          'public/index.min.css': ("public/" + e for e in srcCSS)
     watch:
       options:
         livereload: true
@@ -158,9 +162,6 @@ module.exports = (grunt) ->
           port: 8080
           base: "public/"
           keepalive: true
-          middleware: [
-            [ "/", serveStatic "public" ]
-          ]
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-sass'
